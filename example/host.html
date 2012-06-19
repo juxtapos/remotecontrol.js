@@ -1,6 +1,6 @@
 <html>
 <head>
-	<title>touch-remote-example: application host</title>
+	<title>remotecontrol.js: host application</title>
 	<script src="socket.io.min.js"></script>
 	<script>
 		var socket = io.connect(location.host + ':1337');
@@ -17,23 +17,24 @@
 		socket.on('register', function (data) {
 			console.log('register ' + data.tokenId);
 			socket.emit('confirmRegister', { tokenId: data.tokenId } );
-		})
+		});
+
+
 
 		socket.on('gesturechange', function (data) {
-			console.log('rotooooo!')
 			var e = document.getElementById("box");
 			e.style.webkitTransform = "rotate(" + data.rotation + "deg) scale(" + data.scale + ")"
 			e.style.MozTransform = "rotate(" + data.rotation + "deg) scale(" + data.scale + ")"
 		})
 
 		socket.on('touchmove', function (data) {
-			// for (var i = 0; i < data.touches.length; i++) {
-			// 	var e = document.getElementById('pointer' + (i+1));
+			for (var i = 0; i < data.touches.length; i++) {
+				var e = document.getElementById('pointer' + (i+1));
 				
-			// 	e.style.left = data.touches[i].pageX + "px";
-			// 	e.style.top = data.touches[i].pageY + "px";
+				e.style.left = data.touches[i].pageX + "px";
+				e.style.top = data.touches[i].pageY + "px";
 				
-			// }
+			}
 		});
 
 
