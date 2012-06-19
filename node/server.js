@@ -2,7 +2,7 @@ var socketio = require('socket.io'),
 	crypto = require('crypto'),
 	io = socketio.listen(1337),
 	tokens = {},
-	TOKEN_TTL = 20000;
+	TOKEN_TTL = 60000;
 
 io.configure(function(){
     //io.enable('browser client etag');
