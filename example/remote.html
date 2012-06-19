@@ -1,0 +1,98 @@
+<html>
+<head>
+	<title>touch-remote-example: touchpad</title>
+	<script src="socket.io.min.js"></script>
+	<script>
+		var socket = io.connect(location.host + ':1337');
+
+		socket.on('connect', function () {
+			console.log('connected');
+		});
+
+		socket.on('confirmRegister', function () {
+			console.log('confirmRegister');
+			capture(true);
+		});
+
+		socket.on('disconnect', function (data) {
+			console.log(data.error);
+		});
+
+		socket.on('supplyToken', function (data) {
+			console.log('<o');
+			if (data.error) {
+				console.log(data.error);
+			}
+		});
+
+		function capture(doCapture) {
+			var method = doCapture ? window.addEventListener : window.removeEventListener;
+			method('gesturestart', touchEventHandler, true);
+			method('gesturechange', touchEventHandler, true);
+			method('gestureend', touchEventHandler, true);
+			method('touchmove', touchEventHandler, true);
+			method('touchstart', touchEventHandler, true);
+			method('touchend', touchEventHandler, true);
+		}
+
+		function touchEventHandler (event) {
+			var msg = copyTouchEvent(event);
+			socket.emit(event.type, msg);
+			console.log(msg);
+			event.preventDefault();
+		}
+
+		function copyTouchEvent(event) {
+			var e = {
+				changedTouches: copyTouches('changedTouches'),
+				targetTouches: copyTouches('targetTouches'),
+				touches: copyTouches('touches'),
+				rotation: event.rotation,
+				scale: event.scale
+			};
+
+			function copyTouches (prop) {
+				var a = [];
+				Array.prototype.forEach.call(event[prop], function (touch) {
+					a.push(copyTouch(touch));
+				});
+				return a;
+			}
+
+			function copyTouch (event) {
+				var e = {
+					clientX: event.clientX,
+					clientY: event.clientY,
+					pageX: event.pageX,
+					pageY: event.pageY,
+					identifier: event.identifier,
+				};
+			}
+
+			return e;
+		}
+
+		function connect () {
+			
+		}
+
+		function supplyToken (tokenId) {
+			socket.emit('supplyToken', { tokenId: tokenId } );
+		}
+	</script>
+	<style>
+	html, body {
+		overflow: hidden;
+
+	}
+	</style>
+</head>
+<body>
+	<input type="text" id="tokenField"><button id="tokenSend">Supply Token</button>
+</body>
+<script>
+document.getElementById('tokenSend').addEventListener('click', function () {
+	supplyToken(document.getElementById('tokenField').value);
+})
+</script>
+</html>

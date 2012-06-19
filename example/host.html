@@ -1,0 +1,76 @@
+<html>
+<head>
+	<title>touch-remote-example: application host</title>
+	<script src="socket.io.min.js"></script>
+	<script>
+		var socket = io.connect(location.host + ':1337');
+		
+		socket.on('connect', function () {
+			console.log('connect');
+			getToken();
+		});
+
+		socket.on('receiveToken', function (data) {
+			console.log('receiveToken ' + data.tokenId);
+		}); 
+
+		socket.on('register', function (data) {
+			console.log('register ' + data.tokenId);
+			socket.emit('confirmRegister', { tokenId: data.tokenId } );
+		})
+
+		socket.on('gesturechange', function (data) {
+			console.log('rotooooo!')
+			var e = document.getElementById("box");
+			e.style.webkitTransform = "rotate(" + data.rotation + "deg) scale(" + data.scale + ")"
+			e.style.MozTransform = "rotate(" + data.rotation + "deg) scale(" + data.scale + ")"
+		})
+
+		socket.on('touchmove', function (data) {
+			// for (var i = 0; i < data.touches.length; i++) {
+			// 	var e = document.getElementById('pointer' + (i+1));
+				
+			// 	e.style.left = data.touches[i].pageX + "px";
+			// 	e.style.top = data.touches[i].pageY + "px";
+				
+			// }
+		});
+
+
+		function getToken() {
+			socket.emit('getToken');
+		}
+	</script>
+	<style>
+		#box {
+			width: 200px;
+			height: 260px;
+			position: absolute; 
+			top: 100px;
+			left: 100px;
+			background-color: red;
+		}
+
+		html, body {
+			xcursor: none;
+		}
+
+		.pointer {
+			position: absolute;
+			width: 10px;
+			height: 10px;
+			webkit-border-radius: 8px;
+			background-color: white;
+			opacity: 0.8;
+			border: 1px solid black;
+		}
+	</style>
+</head>
+<body>
+
+<div id="box"></div>
+<div id="pointer1" class="pointer"></div>
+<div id="pointer2" class="pointer"></div>
+<div id="pointer3" class="pointer"></div>
+</body>
+</html>

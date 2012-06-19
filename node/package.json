@@ -1,0 +1,18 @@
+{
+  "author": " <claus@formatvorlage.de>",
+  "name": "touch-remote",
+  "description": "small application to use the touch screen of some device as a controller for another web application",
+  "version": "0.0.0",
+  "dependencies": {
+    "socket.io": "0.9.6",
+    "connect": "2.3.3"
+  },
+  "devDependencies": {},
+  "optionalDependencies": {},
+  "engines": {
+    "node": "*"
+  },
+  "scripts": {
+    "postinstall": "./bin/postinstall.sh"
+  }
+}
