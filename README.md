@@ -61,9 +61,10 @@ open the Javascript console, you'll need it. Now, open <yourExampleURL>/host.htm
 the page, you'll see a token code in your console (you can aquire new tokens using getToken() on the command line).
 
 Next, open <yourExampleURL>/remote.html in your browser on your touch device and enter the token code in the 
-textfield and submit it. That's it. Remember the token maximum life time. 
-You should now be able to rotate and scale the ugly red box on the host application.
-Impressive, isn't it ;-)
+textfield and submit it. That's it. Remember the token maximum life time. Currently the debug mode is switched on
+for the server application that will send a remote client the last token that was issued automatically
+(lazy is good). You should now be able to rotate and scale the ugly red box on the host application. Also,
+four seemingly boring black boxes will follow your finger movements in real-time! Impressive, isn't it? Seriously. ;-)
 
 # Design
 
@@ -94,9 +95,18 @@ of users simultanously.
 
 ## Connection Handling
 
+Better read the source.
+
    * Host application sends a 'register' message to the touch remote app.     
    * Host application sends a 'getToken' message to touchremote app, which answers with a  'receiveToken' message.     
    * Remote application sends a 'supplyToken' message to the touchremote app, which answers with a
 'tokenAccepted' message, if this token is known: it was previously issued to a host application and
 is still valid.
+
+## Next Steps
+
+   * Refactor the host application script code to library, implement event interface. 
+   * Refactor the remote application script code to library.
+   * Add configuration for server and example applications. 
+   * Handle disconnects properly. 
 

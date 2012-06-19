@@ -5,8 +5,9 @@ var socketio = require('socket.io'),
 	TOKEN_TTL = 60000;
 
 io.configure(function(){
-    //io.enable('browser client etag');
-    io.set('log level', 0);
+    io.enable('browser client etag');
+    io.set('log level', 0); // 3 for full message logging
+    io.set('debug', true); // set to true for testing, sends token automatically to next connecting client. 
 });
 
 function createTokenId() {
@@ -16,13 +17,23 @@ function createTokenId() {
 	return sha.substring(offset, offset + 5);
 }
 
+
+var last_token_danger = null;
+
 io.sockets.on('connection', function (socket) {
+	if (io.get('debug')) {
+		socket.emit('last_token_danger', { last_token_danger: last_token_danger } );
+	}
+
 	socket.on('getToken', function (data) {
 		var token = createTokenId();
 		tokens[token] = {
 			timeStamp: new Date().getTime(),
 			sourceSocket: socket,
 		}
+
+		last_token_danger = token;
+
 		socket.emit('receiveToken', { tokenId: token });
 	});
 
