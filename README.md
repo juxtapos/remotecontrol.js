@@ -66,7 +66,7 @@ for the server application that will send a remote client the last token that wa
 (lazy is good). You should now be able to rotate and scale the ugly red box on the host application. Also,
 four seemingly boring black boxes will follow your finger movements in real-time! Impressive, isn't it? Seriously. ;-)
 
-# Design
+## Design
 
 The basic design is really simple: two web clients, one acting as the host application, the other
 acting as a remote touch device are connected via a light-weight server application that is powered by 
