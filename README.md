@@ -87,13 +87,7 @@ Specifically, these are touchstart, touchchange, touchend, gesturestart, gesture
 sending an event, it is stripped from any DOM-related information, also all key-related event properties
 are stripped (but can be added easily, if required).
 
-## Performance
-
-I have not yet tested this setup with more than two clients connecting and interacting at the same time. 
-However, given serious reports on the io performance of node.js, I think it should easily scale to hundreds
-of users simultanously. 
-
-## Connection Handling
+### Connection Handling
 
 Better read the source.
 
@@ -103,6 +97,12 @@ Better read the source.
 'tokenAccepted' message, if this token is known: it was previously issued to a host application and
 is still valid.
 
+## Performance
+
+I have not yet tested this setup with more than two clients connecting and interacting at the same time. 
+However, given serious reports on the io performance of node.js, I think it should easily scale to hundreds
+of users simultanously. 
+
 ## Next Steps
 
    * Refactor the host application script code to library, implement event interface. 
@@ -110,3 +110,10 @@ is still valid.
    * Add configuration for server and example applications. 
    * Handle disconnects properly. 
 
+## Licensing
+
+Modified BSD. Wisely your power you must use.  
+
+## Trivia
+
+As of today, the project contains more documentation than code. Thank you, Javascript. 
