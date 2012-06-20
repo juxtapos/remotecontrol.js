@@ -12,6 +12,7 @@
   },
   "dependencies": {
     "socket.io": "0.9.6",
+    "socket.io-client": "0.9.6",
     "connect": "2.3.3"
   },
   "devDependencies": {},
