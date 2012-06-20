@@ -58,7 +58,8 @@ function RemoteControl (options) {
 				clientX: event.clientX,
 				clientY: event.clientY,
 				pageX: event.pageX,
-				pageY: event.pageY
+				pageY: event.pageY,
+				identifier: event.identifier
 			};
 		}
 

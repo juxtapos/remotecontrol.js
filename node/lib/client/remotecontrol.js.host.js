@@ -13,6 +13,7 @@ function RemoteControlHost (options) {
 
 	socket.on('receiveToken', function (data) {
 		console.log('receiveToken ' + data.tokenId);
+		emitEvent('receiveToken', data)
 	}); 
 
 	socket.on('register', function (data) {
@@ -29,7 +30,7 @@ function RemoteControlHost (options) {
 	}
 
 	function addEventListener (type, handler) {
-		if (~captureEvents.indexOf(type)) {
+		if (~captureEvents.indexOf(type) || ~['receiveToken'].indexOf(type)) {
 			if (!(type in events)) {
 				events[type] = [];
 			}

@@ -1,19 +1,14 @@
+<!DOCTYPE html>
 <html>
 <head>
 	<title>remotecontrol.js: remote application</title>
-
-	<style>
-	html, body {
-		overflow: hidden;
-	}
-	</style>
-
+	<link rel="stylesheet" href="remotecontrol.js.remote.css" />
+	<link rel="stylesheet" href="remote.css" />
 	<script src="socket.io.min.js"></script>
 	<script src="remotecontrol.js.remote.js"></script>
 	<script>
 	var remotecontrol = new RemoteControl( { url: location.host, port: 1337 } );
 	</script>
-	
 </head>
 <body>
 	<input type="text" id="tokenField" value=""><button id="tokenSend">Supply Token</button>

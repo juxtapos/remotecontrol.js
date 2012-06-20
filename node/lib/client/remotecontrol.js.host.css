@@ -1,0 +1,37 @@
+.remotecontrol {
+	width: 150px;
+	height: 120px;
+	padding: 12px;
+	text-align: center;
+	border: 1px solid gray;
+	border-radius: 12px;
+	box-shadow: 0px 4px 12px 2px rgba(0,0,0,.4);
+	font-family: Verdana;
+	background-image: -webkit-linear-gradient(#f02929 0%, #bf2929 90%, #6f1010 100%);
+}
+
+.remotecontrol .title {
+	font-size: 12px;
+	margin-bottom: 1em;
+	text-decoration: underline;
+}
+
+.remotecontrol button {
+	font-size: 110%;
+	background-color: rgba(210, 10, 10, 1);
+	padding: 0.6em;
+	border: 1px solid rgba(255, 255, 255, 0.2);
+	box-shadow: inset 1px 1px 1px 1px rgba(55, 55, 55, 0.2);
+	border-radius: 12px;
+	color: white;
+}
+
+.remotecontrol button:active {
+	background-color: red;
+}
+
+.remotecontrol .tokenDisplay {
+	color: white;
+	font-style: italics;
+	margin-top: 0.8em;
+}
