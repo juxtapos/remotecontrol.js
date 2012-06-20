@@ -6,7 +6,7 @@ var socketio = require('socket.io'),
 
 io.configure(function(){
     io.enable('browser client etag');
-    io.set('log level', 0); // 3 for full message logging
+    io.set('log level', 3); // 3 for full message logging
     io.set('debug', true); // set to true for testing, sends token automatically to next connecting client. 
 });
 

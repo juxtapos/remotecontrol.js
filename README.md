@@ -105,8 +105,6 @@ of users simultanously.
 
 ## Next Steps
 
-   * Refactor the host application script code to library, implement event interface. 
-   * Refactor the remote application script code to library.
    * Add configuration for server and example applications. 
    * Handle disconnects properly. 
 

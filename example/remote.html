@@ -1,101 +1,26 @@
 <html>
 <head>
 	<title>remotecontrol.js: remote application</title>
-	<script src="socket.io.min.js"></script>
-	<script>
-		var socket = io.connect(location.host + ':1337');
 
-		socket.on('connect', function () {
-			console.log('connect');
-		});
-
-		socket.on('confirmRegister', function () {
-			console.log('confirmRegister');
-			capture(true);
-		});
-
-		socket.on('disconnect', function (data) {
-			console.log(data.error);
-		});
-
-		socket.on('last_token_danger', function (data) {
-			document.getElementById('tokenField').value = data.last_token_danger;
-		});
-
-		socket.on('supplyToken', function (data) {
-			if (data.error) {
-				console.log(data.error);
-			}
-		});
-
-		function touchEventHandler (event) {
-			var msg = copyTouchEvent(event);
-			socket.emit(event.type, msg);
-			console.log(msg);
-			event.preventDefault();
-		}
-
-		function capture(doCapture) {
-			var method = doCapture ? window.addEventListener : window.removeEventListener;
-			method('gesturestart', touchEventHandler, true);
-			method('gesturechange', touchEventHandler, true);
-			method('gestureend', touchEventHandler, true);
-			method('touchmove', touchEventHandler, true);
-			method('touchstart', touchEventHandler, true);
-			method('touchend', touchEventHandler, true);
-		}
-
-		function copyTouchEvent(event) {
-			var e = {
-				//changedTouches: copyTouches('changedTouches'),
-				//targetTouches: copyTouches('targetTouches'),
-				touches: copyTouches('touches'),
-				rotation: event.rotation,
-				scale: event.scale
-			};
-			return e;
-
-			function copyTouches (prop) {
-				var a = [];
-				Array.prototype.forEach.call(event[prop], function (touch) {
-					a.push(copyTouch(touch));
-				});
-				return a;
-			}
-
-			function copyTouch (event) {
-				var e = {
-					clientX: event.clientX,
-					clientY: event.clientY,
-					pageX: event.pageX,
-					pageY: event.pageY
-				};
-				return e;
-			}
-
-			
-		}
-
-		function connect () {
-			
-		}
-
-		function supplyToken (tokenId) {
-			socket.emit('supplyToken', { tokenId: tokenId } );
-		}
-	</script>
 	<style>
 	html, body {
 		overflow: hidden;
 	}
 	</style>
+
+	<script src="socket.io.min.js"></script>
+	<script src="remote-client.js"></script>
+	<script>
+	var remotecontrol = new RemoteControl( { url: location.host, port: 1337 } );
+	</script>
+	
 </head>
 <body>
 	<input type="text" id="tokenField" value=""><button id="tokenSend">Supply Token</button>
 </body>
 <script>
 document.getElementById('tokenSend').addEventListener('click', function () {
-	supplyToken(document.getElementById('tokenField').value);
+	remotecontrol.supplyToken(document.getElementById('tokenField').value);
 })
 </script>
 </html>

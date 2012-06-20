@@ -2,45 +2,35 @@
 <head>
 	<title>remotecontrol.js: host application</title>
 	<script src="socket.io.min.js"></script>
+	<script src="remote-host.js"></script>
 	<script>
-		var socket = io.connect(location.host + ':1337');
-		
-		socket.on('connect', function () {
-			console.log('connected');
-			getToken();
-		});
+	var options = { 
+			url: location.host, 
+			port: 1337,
+			capture: ['touchmove', 'gesturechange']
+		}, 
+		rch = new RemoteControlHost(options);
 
-		socket.on('receiveToken', function (data) {
-			console.log('receiveToken ' + data.tokenId);
-		}); 
+	function gestureChangeHandler (data) {
+		var e = document.getElementById("box");
+		e.style.webkitTransform = "rotate(" + data.rotation + "deg) scale(" + data.scale + ")"
+		e.style.MozTransform = "rotate(" + data.rotation + "deg) scale(" + data.scale + ")"
+	}
 
-		socket.on('register', function (data) {
-			console.log('register ' + data.tokenId);
-			socket.emit('confirmRegister', { tokenId: data.tokenId } );
-		});
-
-		socket.on('gesturechange', function (data) {
-			var e = document.getElementById("box");
-			e.style.webkitTransform = "rotate(" + data.rotation + "deg) scale(" + data.scale + ")"
-			e.style.MozTransform = "rotate(" + data.rotation + "deg) scale(" + data.scale + ")"
-		});
-
-		socket.on('touchmove', function (data) {
-			for (var i = 0; i < data.touches.length; i++) {
-				var e = document.getElementById('pointer' + (i+1));
-				if (!data.touches) {
-				} else {
-					e.style.display = "block";
-					e.style.left = data.touches[i].pageX + "px";
-					e.style.top = data.touches[i].pageY + "px";
-				}
+	function touchmoveHandler (data) {
+		for (var i = 0; i < data.touches.length; i++) {
+			var e = document.getElementById('pointer' + (i+1));
+			if (!data.touches) {
+			} else {
+				e.style.display = "block";
+				e.style.left = data.touches[i].pageX + "px";
+				e.style.top = data.touches[i].pageY + "px";
 			}
-		});
-
-
-		function getToken() {
-			socket.emit('getToken');
 		}
+	}
+
+	rch.addEventListener('gesturechange', gestureChangeHandler);
+	rch.addEventListener('touchmove', touchmoveHandler);
 	</script>
 	<style>
 		#box {
