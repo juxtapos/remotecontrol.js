@@ -1,3 +1,7 @@
+body {
+	background-color: rgba(108, 16, 39, 1);
+}
+
 #box {
 	width: 200px;
 	height: 260px;
@@ -5,10 +9,6 @@
 	top: 100px;
 	left: 100px;
 	background-color: red;
-}
-
-html, body {
-	xcursor: none;
 }
 
 .pointer {

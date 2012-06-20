@@ -2,16 +2,21 @@
 <html>
 <head>
 	<title>remotecontrol.js: remote application</title>
-	<link rel="stylesheet" href="remotecontrol.js.remote.css" />
+	<link rel="stylesheet" href="dist/remotecontroljs.css" />
 	<link rel="stylesheet" href="remote.css" />
-	<script src="socket.io.min.js"></script>
-	<script src="remotecontrol.js.remote.js"></script>
+	<script src="dist/socket.io.min.js"></script>
+	<script src="dist/remotecontrol.js.remote.js"></script>
 	<script>
 	var remotecontrol = new RemoteControl( { url: location.host, port: 1337 } );
 	</script>
 </head>
 <body>
-	<input type="text" id="tokenField" value=""><button id="tokenSend">Supply Token</button>
+	<div class="remotecontrol" id="remotecontrol">
+		<div class="title">remotecontrol.js</div>
+		<input type="text" id="tokenField" value="">
+		<button id="tokenSend">Supply Token</button>
+	</div>
+	
 </body>
 <script>
 document.getElementById('tokenSend').addEventListener('click', function () {
