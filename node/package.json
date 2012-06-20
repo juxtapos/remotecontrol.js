@@ -1,8 +1,15 @@
 {
   "author": " <claus@formatvorlage.de>",
-  "name": "touch-remote",
+  "name": "remotecontrol.js",
   "description": "small application to use the touch screen of some device as a controller for another web application",
-  "version": "0.0.0",
+  "version": "0.1.0",
+  "homepage": "https://github.com/juxtapos/remotecontrol.js",
+  "keywords": ["realtime", "websockets", "socket.io", "touch", "gesture", "multitouch"],
+  "os" : [ "darwin", "linux" ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/juxtapos/remotecontrol.js.git"
+  },
   "dependencies": {
     "socket.io": "0.9.6",
     "connect": "2.3.3"
@@ -10,8 +17,9 @@
   "devDependencies": {},
   "optionalDependencies": {},
   "engines": {
-    "node": "*"
+    "node": ">=0.6"
   },
+  "license": "BSD",
   "scripts": {
     "postinstall": "./bin/postinstall.sh"
   }
