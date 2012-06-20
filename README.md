@@ -1,12 +1,14 @@
 # remotecontrol.js
 
-Why having your fancy iPad, tablet pc or even smartphone sit idle when you're in front of your
-desktop machine. You can instead use it as a remote touch-device for your web application. Any
-touch-enabled device that runs in a Webkit-based browser, e.g. all iOS, Android, OS X, can 
-connect to a web application and enhance its experience by providing single-touch
-events and multi-touch gestures. With the native Websocket support and running on recent devices, 
-hundreds of requests in a few seconds can be captured and sent to a host application easily, allowing 
-for the implementation of awesome real-time interaction scenarios. 
+With remotecontrol.js you can utilize a touch-enabled device like an iPad, tablet PC or even smartphone 
+as a remote control for your web application. For this to work, an additional web page that is designed
+for touch devices needs to be created that contains the remote library.
+Visiting this page, a user can connect to a host application using a security token and interact with the application by having his touch and gesture events sent to it. Any application can be made a host application by simply 
+including the host library and using its API. Remote events can be processed like any standard event. 
+A Webkit-based browser on the touch device is 
+currently required, Internet Explorer support will follow. The provided example shows real-time interaction 
+with the host user interface, but is very basic. This basic design should however already allow for 
+awesome interaction scenarios. 
 
 remotecontrol.js consists of a small node.js-powered web applications and two client libraries that
 handle sending and receiving events from one device to the other. Communication is based on
@@ -87,15 +89,6 @@ Specifically, these are touchstart, touchchange, touchend, gesturestart, gesture
 sending an event, it is stripped from any DOM-related information, also all key-related event properties
 are stripped (but can be added easily, if required).
 
-### Connection Handling
-
-Better read the source.
-
-   * Host application sends a 'register' message to the touch remote app.     
-   * Host application sends a 'getToken' message to touchremote app, which answers with a  'receiveToken' message.     
-   * Remote application sends a 'supplyToken' message to the touchremote app, which answers with a
-'tokenAccepted' message, if this token is known: it was previously issued to a host application and
-is still valid.
 
 ## Performance
 
@@ -105,8 +98,11 @@ of users simultanously.
 
 ## Next Steps
 
-   * Add configuration for server and example applications. 
-   * Handle disconnects properly. 
+   * Internet Explorer support. 
+   * Add server configuration file.
+   * Handle disconnects, remove token, message opposite.
+   * Do some stress tests.
+   * Improve touch and gesture recognition.
 
 ## Licensing
 
