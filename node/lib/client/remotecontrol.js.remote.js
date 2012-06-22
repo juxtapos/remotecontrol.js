@@ -29,22 +29,37 @@ function RemoteControl (options) {
 
 	function touchEventHandler (event) {
 		var msg = copyTouchEvent(event);
-		socket.emit(event.type, msg);
+		socket.emit('event:' + event.type, msg);
 		event.preventDefault();
 	}
 
 	function capture(doCapture) {
 		var method = doCapture ? window.addEventListener : window.removeEventListener;
-		method('gesturestart', touchEventHandler, true);
-		method('gesturechange', touchEventHandler, true);
-		method('gestureend', touchEventHandler, true);
-		method('touchmove', touchEventHandler, true);
-		method('touchstart', touchEventHandler, true);
-		method('touchend', touchEventHandler, true);
+		// Internet Explorer 10
+		if (window.navigator.msPointerEnabled) {
+			[
+				'MSPointerDown', 'MSPointerMove', 'MSPointerUp', 
+				'MSGestureStart', 'MSGestureChange', 'MSGestureEnd'
+			].forEach(function (type) { method(type, touchEventHandler, false); } );
+		// Webkit
+		} else {
+			[
+				'gesturestart', 'gesturechange', 'gestureend', 
+				'touchmove', 'touchstart', 'touchend'
+			].forEach(function (type) { method(type, touchEventHandler, false); });
+		}
 	}
 
-	function copyTouchEvent(event) {
+	var copyTouchEvent = window.navigator.msPointerEnabled ? copyMSTouchEvent : copyWebkitTouchEvent;
 
+	function copyMSTouchEvent(event) {
+		return {
+			rotation: event.rotation,
+			identifier: event.identifier
+		}
+	}
+
+	function copyWebkitTouchEvent(event) {
 		function copyTouches (prop) {
 			var a = [];
 			Array.prototype.forEach.call(event[prop], function (touch) {
@@ -64,7 +79,7 @@ function RemoteControl (options) {
 		}
 
 		return {
-			changedTouches: copyTouches('changedTouches'),
+			changedTouches: event.changedTouches ? copyTouches('changedTouches') : null,
 			targetTouches: copyTouches('targetTouches'),
 			touches: copyTouches('touches'),
 			rotation: event.rotation,

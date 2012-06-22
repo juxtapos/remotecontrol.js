@@ -7,7 +7,12 @@
 	<script src="dist/socket.io.min.js"></script>
 	<script src="dist/remotecontrol.js.remote.js"></script>
 	<script>
-	var remotecontrol = new RemoteControl( { url: location.host, port: 1337 } );
+	window.addEventListener('load', function () {
+		var remotecontrol = new RemoteControl( { url: location.host, port: 1337 } );
+		document.getElementById('tokenSend').addEventListener('click', function () {
+			remotecontrol.supplyToken(document.getElementById('tokenField').value);
+		});
+	});
 	</script>
 </head>
 <body>
@@ -16,11 +21,5 @@
 		<input type="text" id="tokenField" value="">
 		<button id="tokenSend">Supply Token</button>
 	</div>
-	
 </body>
-<script>
-document.getElementById('tokenSend').addEventListener('click', function () {
-	remotecontrol.supplyToken(document.getElementById('tokenField').value);
-})
-</script>
 </html>

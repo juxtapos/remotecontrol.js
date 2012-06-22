@@ -2,7 +2,7 @@ function RemoteControlHost (options) {
 	var options = options || {},
 		host = options.host || location.host,
 		port = options.port || 1337,
-		captureEvents = options.capture || ['touchstart', 'touchmove', 'touchend', 'gesturestart', 'gesturechange', 'gestureend'],
+		captureEvents = options.capture || ['MSPointerMove', 'touchstart', 'touchmove', 'touchend', 'gesturestart', 'gesturechange', 'gestureend'],
 		socket = io.connect(host + ':' + port),
 		events = {};
 			
@@ -21,12 +21,15 @@ function RemoteControlHost (options) {
 		socket.emit('confirmRegister', { tokenId: data.tokenId } );
 
 		captureEvents.forEach(function (type) { 
-			socket.on(type, function (data) { emitEvent(type, data); } );
+			socket.on(type, function (data) { 
+				type = type.substring(type.indexOf(':') + 1);
+				emitEvent(type, data); 
+			} );
 		});
 	});
 
 	function getToken() {
-		socket.emit('getToken');
+		socket.emit('host:getToken');
 	}
 
 	function addEventListener (type, handler) {

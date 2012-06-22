@@ -15,7 +15,7 @@
 		var options = { 
 			url: location.host, 
 			port: 1337,
-			capture: ['touchmove', 'gesturechange', 'touchstart', 'touchend']
+			capture: ['MSPointerMove', 'touchmove', 'gesturechange', 'touchstart', 'touchend']
 		}, 
 		rch = new RemoteControlHost(options);
 
@@ -31,6 +31,8 @@
 		rch.addEventListener('touchmove', touchmoveHandler);
 		rch.addEventListener('touchstart', touchstartHandler);
 		rch.addEventListener('touchend', touchendHandler);
+
+		rch.addEventListener('MSPointerMove', touchmoveHandler);
 	}
 
 
@@ -68,22 +70,22 @@
 		var touches = {};
 
 		function start (data) {
-			data.changedTouches.forEach(function (t) { 
-				touches[t.identifier] = { 
-					touch: t, 
-					timeStamp: new Date().getTime()
-				};
-			});
+			// data.changedTouches.forEach(function (t) { 
+			// 	touches[t.identifier] = { 
+			// 		touch: t, 
+			// 		timeStamp: new Date().getTime()
+			// 	};
+			// });
 
-			var now = new Date().getTime(), notIn = 0;
-			var TargetTouches = [];
-			data.targetTouches.forEach(function (t) { 
-				if (touches[t.identifier] && (now - touches[t.identifier].timeStamp > 1000)) {
-					notIn += 1;
-				}
-			});
+			// var now = new Date().getTime(), notIn = 0;
+			// var TargetTouches = [];
+			// data.targetTouches.forEach(function (t) { 
+			// 	if (touches[t.identifier] && (now - touches[t.identifier].timeStamp > 1000)) {
+			// 		notIn += 1;
+			// 	}
+			// });
 
-			console.log(data.targetTouches.length - notIn + ' touch');
+			// console.log(data.targetTouches.length - notIn + ' touch');
 		}
 
 		function end (data) {

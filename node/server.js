@@ -20,12 +20,31 @@ function createTokenId() {
 
 var last_token_danger = null;
 
+var sockets = {};
+
 io.sockets.on('connection', function (socket) {
+	console.log('client connected')
+
 	if (io.get('debug')) {
 		socket.emit('last_token_danger', { last_token_danger: last_token_danger } );
 	}
 
-	socket.on('getToken', function (data) {
+/*
+	if (!sockets[socket.id]) {
+		console.log('add socket');
+		sockets[socket.id] = socket;
+	}*/
+
+	socket.on('disconnect', function () {
+		console.log('disconnect');
+		console.log(this.id)
+		if (socket.get('remoteTarget', function (err, obj) {
+			console.log('remoteTarget');console.log(obj);
+			obj && obj.emit('disconnect', { error: 'remote host disconnected' } );
+		}));
+	});
+
+	socket.on('host:getToken', function (data) {
 		var token = createTokenId();
 		tokens[token] = {
 			timeStamp: new Date().getTime(),
@@ -37,13 +56,9 @@ io.sockets.on('connection', function (socket) {
 		socket.emit('receiveToken', { tokenId: token });
 	});
 
-	// socket.on('disconnect', function () {
-	// 	if (socket.get('remoteTarget', function (err, obj) {
-	// 		obj && obj.emit('disconnect', { error: 'remote host disconnected' } );
-	// 	}));
-	// });
+	
 
-	socket.on('supplyToken', function (data) {
+	socket.on('remote:supplyToken', function (data) {
 		if (tokens[data.tokenId]) {
 			var token = tokens[data.tokenId];
 			if (token.targetSocket) {
@@ -60,12 +75,24 @@ io.sockets.on('connection', function (socket) {
 		}
 	});
 
+	socket.on('*', function () {
+		console.log('yoghurt');
+
+	});
+
 	socket.on('confirmRegister', function (data) {
 		tokens[data.tokenId].targetSocket.set('remoteTarget', this);
 		tokens[data.tokenId].targetSocket.emit('confirmRegister', { tokenId: data.tokenId } );
 	});
 
-	['gesturestart', 'gesturechange', 'gestureend', 'touchstart', 'touchmove', 'touchend'].forEach(function (type) {
+	// 
+	// Register handlers for all gesture and touch event messages coming from the socket
+	[
+		'event:MSPointerDown', 'event:MSPointerMove', 'event:MSPointerUp', 
+		'event:MSGestureStart', 'event:MSGestureChange', 'event:MSGestureEnd', 
+		'event:gesturestart', 'event:gesturechange', 'event:gestureend', 
+		'event:touchstart', 'event:touchmove','event:touchend'
+	].forEach(function (type) {
 		socket.on(type, function (data) {
 			this.get('remoteTarget', function (err, obj) {
 				obj.emit(type, data);	
