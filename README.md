@@ -98,7 +98,6 @@ of users simultanously.
 
 ## Next Steps
 
-   * Internet Explorer support. 
    * Add server configuration file.
    * Handle disconnects, remove token, message opposite.
    * Do some stress tests.
