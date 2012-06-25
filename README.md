@@ -61,7 +61,9 @@ example applications).
 ### Run
 
 For the example setup to run, the ./example folder in the project root must be available over HTTP. 
-HTTP is required due to some browsers, e.g. Chrome, not allowing http:// requests from a file:// origin.
+HTTP is required due to some browsers, e.g. Chrome, not allowing http:// requests from a file:// origin. You need a 
+decent browser on your remote device, e.g. IE 10 or Safari on iOS. Android should work theoretically, but wasn't 
+tested yet. 
 
 The server is started with
 
@@ -96,7 +98,9 @@ any DOM-related properties, e.g. srcElement, currentTarget, etc. as these don't 
 Instead, any type of selection handling, e.g. to select an object to apply the next operations to, must be implemented 
 completely by the receiving component. 
 
-Also, any type of event that is to be captured on the remote device, need to be set-up. Please see the source. 
+Also, any type of event that is to be captured on the remote device, needs to be enabled on both the sender and receiver
+side. Currently enabled are touchstart, touchchange, touchend, gesturestart, gesturechange, gestureend (Webkit/Safari) 
+and MSPointerDown, MSPointerMove, MSPointerUp, MSGestureStart, MSGestureChange, MSGestureEnd (IE 10+).
 
 ## Performance
 
