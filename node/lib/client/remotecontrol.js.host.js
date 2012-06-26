@@ -1,71 +1,94 @@
 function RemoteControlHost (options) {
 	var options = options || {},
-		host = options.host || location.host,
-		port = options.port || 1337,
-		captureEvents = options.capture || ['MSPointerMove', 'touchstart', 'touchmove', 'touchend', 'gesturestart', 'gesturechange', 'gestureend'],
-		socket = io.connect(host + ':' + port),
-		events = {};
-			
+		socket = io.connect(options.host + ':' + options.port),
+		self = this;
+	this.captureEvents = options.capture || [];
+	this.events = {};
+	
 	socket.on('connect', function () {
-		console.log('connected');
-		getToken();
-	});
+		console.log('connected to server');
 
-	socket.on('receiveToken', function (data) {
-		console.log('receiveToken ' + data.tokenId);
-		emitEvent('receiveToken', data)
-	}); 
-
-	socket.on('register', function (data) {
-		console.log('register ' + data.tokenId);
-		socket.emit('confirmRegister', { tokenId: data.tokenId } );
-
-		captureEvents.forEach(function (type) { 
-			socket.on(type, function (data) { 
-				type = type.substring(type.indexOf(':') + 1);
-				emitEvent(type, data); 
+		// Request: from server to receiver after a valid rcjs:supplyToken message from sender. 
+		// Response: rcjs:confirmRegister message to server.  
+		socket.on('rcjs:registerSender', function (data) {
+			socket.emit('rcjs:confirmRegistration', { tokenId: data.tokenId, events: self.captureEvents } );
+			socket.on('rcjs:event', function (data) { 
+				type = data.type;
+				if (type) { emitEvent(type, data.event); }
 			} );
+		});
+
+		// Request: from server as response to rcjs:requestToken message with tokenId property.
+		// Emits rcjs:requestToken event 
+		socket.on('rcjs:token', function (data) {
+			emitEvent('rcjs:token', data);
 		});
 	});
 
-	function getToken() {
-		socket.emit('host:getToken');
+	/**
+	 * Sends a token request message to the server. 
+	 */
+	function requestToken() {
+		socket.emit('rcjs:requestToken');
 	}
 
+	/**
+	 * Simple event listener implementation. Allows for the registration of all events that are
+	 * captured per options, plus event types that are prefixed 'rcjs:'.
+	 * 
+	 * @param type {String} Event type identifier.
+	 * @param handler {Function} Event handler function.
+	 */
 	function addEventListener (type, handler) {
-		if (~captureEvents.indexOf(type) || ~['receiveToken'].indexOf(type)) {
-			if (!(type in events)) {
-				events[type] = [];
+		if (!type.indexOf('rcjs:') || ~self.captureEvents.indexOf(type)) {
+			if (!(type in self.events)) {
+				self.events[type] = [];
 			}
-			events[type].push(handler);
-		} else {
-			throw new Error('not capturing ' + type);
+			self.events[type].push(handler);
 		}
 	}
 
+	/**
+	 * Removes the given type and handler pair from the list of registered event listeners. 
+	 * 
+	 * @param type {String} Event type. 
+	 * @param handler {Function} Handler function. 
+	 */
 	function removeEventListener (type, handler) {
-		if (events[type]) {
-			for (var i = 0, et = events.type, l = et.length; i < l; i++) {
+		if (self.events[type]) {
+			for (var i = 0, 
+					 et = self.events[type], 
+					 etl = et.length; i < l; i++) {
 				if (et[i] === handler) {
-					events[type] = et.slice(0, i == 0 ? 0 : i  >= et.length ? et.length - 1 : i)
-									.concat(et.slice(i + 1, et.length))
+					self.events[type] = et.slice(0, i == 0 ? 0 : i  >= etl ? etl - 1 : i)
+									 	  .concat(et.slice(i + 1, etl))
 					break;
 				}
 			}
 		}
 	}
 
+	/**
+	 * Emits any type of event to all registered listeners. Additional arguments used for calling
+	 * this method are used as listener function arguments. 
+	 * 
+	 * @param type {String} Event type. 
+	 * @param handler {Function} Handler function. 
+	 */
 	function emitEvent (type) {
-		var self = this, args = arguments;
-		if (events[type]) {
-			events[type].forEach(function (obj) {
+		var args = arguments;
+		if (self.events[type]) {
+			self.events[type].forEach(function (obj) {
 				obj.apply(self, Array.prototype.slice.call(args, 1));
 			});
 		}
 	}
 
+	/**
+	 * Return public symbols.
+	 */
 	return {
-		getToken: getToken, 
+		requestToken: requestToken, 
 		addEventListener: addEventListener,
 		removeEventListener: removeEventListener
 	};

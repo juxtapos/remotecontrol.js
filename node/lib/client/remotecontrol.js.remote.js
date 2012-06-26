@@ -1,53 +1,56 @@
 function RemoteControl (options) {
 	var options = options || {},
-		host = options.host || location.host,
-		port = options.port || 1337,
-		socket = io.connect(host + ':' + port);
+		host = options.host,
+		port = options.port,
+		socket = io.connect(host + ':' + port),
+		self = this;
+	this.key = null; // supplied by server on successful peering
+	this.captureEvents = []; // supplied from receiver
+	this.token = null;
 
 	socket.on('connect', function () {
-		console.log('connect');
-	});
+		console.log('connected to server');
 
-	socket.on('confirmRegister', function () {
-		console.log('confirmRegister');
-		capture(true);
-	});
+		socket.on('rcjs:startCapture', function (data) {
+			self.key = data.key;
+			capture(true, data.events);
+		});
 
-	socket.on('disconnect', function (data) {
-		console.log(data.error);
-	});
+		socket.on('rcjs:receiverDisconnect', function (data) {
+			console.log('receiver disconnected');
+		});
 
-	socket.on('last_token_danger', function (data) {
-		document.getElementById('tokenField').value = data.last_token_danger;
-	});
+		socket.on('rcjs:supplyToken', function (data) {
+			if (data.error) {
+				console.log(data.error);
+			}
+		});
 
-	socket.on('supplyToken', function (data) {
-		if (data.error) {
+		socket.on('disconnect', function (data) {
 			console.log(data.error);
-		}
+		});
 	});
 
 	function touchEventHandler (event) {
-		var msg = copyTouchEvent(event);
-		socket.emit('event:' + event.type, msg);
+		var eventobj = copyTouchEvent(event);
+		socket.emit('rcjs:event', { type: event.type, event: eventobj, key: self.key, tokenId: self.tokenId } );
 		event.preventDefault();
 	}
 
-	function capture(doCapture) {
+	function genericEventHandler(event) {
+		touchEventHandler(event);
+	}
+
+	function capture(doCapture, events) {
 		var method = doCapture ? window.addEventListener : window.removeEventListener;
-		// Internet Explorer 10
-		if (window.navigator.msPointerEnabled) {
-			[
-				'MSPointerDown', 'MSPointerMove', 'MSPointerUp', 
-				'MSGestureStart', 'MSGestureChange', 'MSGestureEnd'
-			].forEach(function (type) { method(type, touchEventHandler, false); } );
-		// Webkit
-		} else {
-			[
-				'gesturestart', 'gesturechange', 'gestureend', 
-				'touchmove', 'touchstart', 'touchend'
-			].forEach(function (type) { method(type, touchEventHandler, false); });
-		}
+		self.captureEvents = events || self.captureEvents;
+		self.captureEvents.forEach(function (type) { 
+			try {
+				method(type, genericEventHandler, false); 
+			} catch (ex) {
+				console.log(ex);
+			} 
+		} );
 	}
 
 	var copyTouchEvent = window.navigator.msPointerEnabled ? copyMSTouchEvent : copyWebkitTouchEvent;
@@ -60,11 +63,14 @@ function RemoteControl (options) {
 	}
 
 	function copyWebkitTouchEvent(event) {
+
 		function copyTouches (prop) {
 			var a = [];
-			Array.prototype.forEach.call(event[prop], function (touch) {
-				a.push(copyTouch(touch));
-			});
+			if (event.prop) {
+				Array.prototype.forEach.call(event[prop], function (touch) {
+					a.push(copyTouch(touch));
+				});
+			}
 			return a;
 		}
 
@@ -83,12 +89,15 @@ function RemoteControl (options) {
 			targetTouches: copyTouches('targetTouches'),
 			touches: copyTouches('touches'),
 			rotation: event.rotation,
-			scale: event.scale
+			scale: event.scale,
+			gamma: event.gamma,
+			beta: event.beta
 		};
 	}
 
 	function supplyToken (tokenId) {
-		socket.emit('supplyToken', { tokenId: tokenId } );
+		self.tokenId = tokenId;
+		socket.emit('rcjs:supplyToken', { tokenId: tokenId } );
 	}
 
 	return {

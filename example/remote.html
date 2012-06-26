@@ -8,7 +8,7 @@
 	<script src="dist/remotecontrol.js.remote.js"></script>
 	<script>
 	window.addEventListener('load', function () {
-		var remotecontrol = new RemoteControl( { url: location.host, port: 1337 } );
+		var remotecontrol = new RemoteControl( { host: 'cumulus.local', port: 1337 } );
 		document.getElementById('tokenSend').addEventListener('click', function () {
 			remotecontrol.supplyToken(document.getElementById('tokenField').value);
 		});

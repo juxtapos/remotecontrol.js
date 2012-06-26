@@ -9,30 +9,58 @@
 	<script>
 	document.addEventListener('DOMContentLoaded', function () {
 		init();
+		var tiltLR = 0;
+					
+					// beta is the front-to-back tilt in degrees, where front is positive
+					var tiltFB = -20
+
+		document.getElementById("frame").style.webkitTransform = "rotate("+ tiltLR +"deg) rotate3d(1,0,0, "+ (tiltFB*-1)+"deg)";
+
 	});
 
-	function init () {
-		var options = { 
-			url: location.host, 
-			port: 1337,
-			capture: ['MSPointerMove', 'touchmove', 'gesturechange', 'touchstart', 'touchend']
-		}, 
-		rch = new RemoteControlHost(options);
-
-		var button = document.querySelector('.remotecontrol');
-		button.addEventListener('click', function () { 
-			rch.getToken();
-			rch.addEventListener('receiveToken', function (data) {
-				document.querySelector('#remotecontrol .tokenDisplay').innerHTML = data.tokenId;
+	function init (options) {
+		var	rch = new RemoteControlHost({ 
+				host: 'cumulus.local', 
+				port: 1337,
+				capture: [
+					'MSPointerUp',
+					'MSPointerMove',
+					'MSPointerDown',
+					'touchstart', 
+					'touchmove', 
+					'touchend', 
+					'gesturestart', 
+					'gesturechange', 
+					'gestureend', 
+					'mouseup',
+					'deviceorientation'
+				]
 			});
+
+		document.querySelector('#remotecontrol button').addEventListener('click', function () { 
+			rch.requestToken();
 		});
 
+		rch.addEventListener('rcjs:token', function (data) {
+			document.querySelector('#remotecontrol .tokenDisplay').innerHTML = data.tokenId;
+		});
+
+		// add what you need here
 		rch.addEventListener('gesturechange', gestureChangeHandler);
 		rch.addEventListener('touchmove', touchmoveHandler);
 		rch.addEventListener('touchstart', touchstartHandler);
 		rch.addEventListener('touchend', touchendHandler);
-
 		rch.addEventListener('MSPointerMove', touchmoveHandler);
+		rch.addEventListener('mouseup', function (event) {
+			console.log('mouseup');
+			console.log(event);
+		});
+		rch.addEventListener('deviceorientation', function (event) {
+			//console.log('deviceorientation');
+			var tiltLR = event.gamma;		
+			var tiltFB = event.beta;
+			document.getElementById("frame").style.webkitTransform = "rotate("+ tiltLR +"deg) rotate3d(1,0,0, "+ (tiltFB*-1)+"deg)";
+		});
 	}
 
 
@@ -117,5 +145,9 @@
 	<div id="pointer2" class="pointer"></div>
 	<div id="pointer3" class="pointer"></div>
 	<div id="pointer4" class="pointer"></div>
+	<div style="-webkit-perspective: 300; perspective: 300;position:absolute;top: 200px;">
+
+		<iframe src="http://arstechnica.com" id="frame" style="width:900px;height:700px;background-color:red"></iframe>
+</div>
 </body>
 </html>
