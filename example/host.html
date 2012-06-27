@@ -33,6 +33,7 @@
 					'gesturechange', 
 					'gestureend', 
 					'mouseup',
+					'mousemove',
 					'deviceorientation'
 				]
 			});
@@ -52,6 +53,10 @@
 		rch.addEventListener('touchend', touchendHandler);
 		rch.addEventListener('MSPointerMove', touchmoveHandler);
 		rch.addEventListener('mouseup', function (event) {
+			console.log('mouseup');
+			console.log(event);
+		});
+		rch.addEventListener('mousemove', function (event) {
 			console.log('mouseup');
 			console.log(event);
 		});
@@ -145,9 +150,9 @@
 	<div id="pointer2" class="pointer"></div>
 	<div id="pointer3" class="pointer"></div>
 	<div id="pointer4" class="pointer"></div>
-	<div style="-webkit-perspective: 300; perspective: 300;position:absolute;top: 200px;">
+	<!--<div style="-webkit-perspective: 300; perspective: 300;position:absolute;top: 200px;">
 
 		<iframe src="http://arstechnica.com" id="frame" style="width:900px;height:700px;background-color:red"></iframe>
-</div>
+</div>-->
 </body>
 </html>
