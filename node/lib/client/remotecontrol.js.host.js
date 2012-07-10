@@ -12,7 +12,8 @@ function RemoteControlHost (options) {
 		// Response: rcjs:confirmRegister message to server.  
 		socket.on('rcjs:registerSender', function (data) {
 			socket.emit('rcjs:confirmRegistration', { tokenId: data.tokenId, events: self.captureEvents } );
-			socket.on('rcjs:event', function (data) { 
+			socket.on('rcjs:event', function (data) {
+				console.log('event ' + data.type);
 				type = data.type;
 				if (type) { emitEvent(type, data.event); }
 			} );
@@ -61,7 +62,7 @@ function RemoteControlHost (options) {
 					 etl = et.length; i < l; i++) {
 				if (et[i] === handler) {
 					self.events[type] = et.slice(0, i == 0 ? 0 : i  >= etl ? etl - 1 : i)
-									 	  .concat(et.slice(i + 1, etl))
+									 	  .concat(et.slice(i + 1, etl));
 					break;
 				}
 			}
@@ -84,12 +85,19 @@ function RemoteControlHost (options) {
 		}
 	}
 
+	function plugin (objs) {
+		for (event in objs) {
+			this.addEventListener(event, objs[event]);
+		}
+	}
+
 	/**
 	 * Return public symbols.
 	 */
 	return {
 		requestToken: requestToken, 
 		addEventListener: addEventListener,
-		removeEventListener: removeEventListener
+		removeEventListener: removeEventListener,
+		plugin: plugin
 	};
 }

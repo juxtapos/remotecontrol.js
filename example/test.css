@@ -1,0 +1,85 @@
+html {
+    background-color: #024d70;
+}
+
+body {
+    margin: 0;
+    padding: 0;   
+    xbackground: -webkit-linear-gradient(top, #5a5a5a 0%, black 800px);    
+}
+
+.remotecontrol {
+    top: 40px;
+    left: 40px;
+    position: absolute;
+    width: 250px;
+    border-radius: 20px;
+    background: -webkit-linear-gradient(
+        top, 
+        rgba(210, 210, 212, 0.9) 0%,
+        rgba(210, 210, 210, 0.1) 100%);
+    background-color: gray;
+    box-shadow: 4px 4px 4px 0px rgba(0, 0, 0, 0.5);
+    font-family: Verdana, Arial, sans-serif;
+    padding-bottom: 16px;
+}
+
+.remotecontrol p {
+    font-size: 10px;
+    width: 80%;
+    margin: 10px auto;
+}
+
+.remotecontrol label {
+    display: block;
+    width: 100%;
+    text-align: center;
+    color: #000;
+    margin: 18px 0 0 0;
+    letter-spacing: 3px;
+    font-size: 14px;
+    font-family: 'Syncopate', sans-serif;
+}
+
+.remotecontrol button {
+    display: block;
+    margin: 0 auto ;
+    border: 1px solid #303030;
+    height: 50px;
+    width: 200px;
+    border-radius: 26px;
+    background-color: #414042;
+    padding-left: 14px;
+    background: -webkit-linear-gradient(#818082, #313032);
+}
+
+.remotecontrol span {
+    font-size: 18px;
+    line-height: 30px;
+    margin-left: -20px;
+    color: #C2B59B;
+    letter-spacing: 2px;
+    font-family: Verdana, Arial, sans-serif;
+}
+
+.remotecontrol button img {
+    float: left;
+}
+
+.remotecontrol button:active {
+    background: -webkit-linear-gradient(#515052, #414042);
+}
+
+.remotecontrol button:active span {
+    color: orange;
+}
+
+.remotecontrol .token {
+    height: 1em;
+}
+
+.remotecontrol select {
+    display: block;
+    width: 80%;
+    margin: auto;
+}

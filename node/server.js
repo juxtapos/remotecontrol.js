@@ -22,7 +22,8 @@ io.configure(function(){
 function createTokenId() {
 	var key = createKey(),
 		offset = parseInt(Math.random() * (key.length - 5))
-	return key.substring(offset, offset + 5);
+	//return key.substring(offset, offset + 5);
+	return 1;
 }
 
 /**
@@ -72,6 +73,7 @@ io.sockets.on('connection', function (socket) {
     // rcjs:registerSender
 	socket.on('rcjs:supplyToken', function (data) {
 		var token;
+		console.log('supplyToken');
 		if ( (token = tokens[data.tokenId]) ) {
 			var receiver = sockets[token.receiverId].socket;
 			if (receiver.sender) {
@@ -96,6 +98,7 @@ io.sockets.on('connection', function (socket) {
 	});
 
 	socket.on('rcjs:event', function (data) {
+		console.log('fooooo');
 		var token = tokens[data.tokenId];
 		if (!token) {
 			socket.emit('rcjs:receiverDisconnect', { error: 'tokenId missing, disconnect.' } );

@@ -42,9 +42,11 @@ function RemoteControl (options) {
 	}
 
 	function capture(doCapture, events) {
+		console.log('capture');
 		var method = doCapture ? window.addEventListener : window.removeEventListener;
 		self.captureEvents = events || self.captureEvents;
 		self.captureEvents.forEach(function (type) { 
+			console.log('capture ' + type);
 			try {
 				method(type, genericEventHandler, false); 
 			} catch (ex) {
@@ -91,7 +93,11 @@ function RemoteControl (options) {
 			rotation: event.rotation,
 			scale: event.scale,
 			gamma: event.gamma,
-			beta: event.beta
+			beta: event.beta,
+			clientX: event.clientX,
+			clientY: event.clientY,
+			pageX: event.pageX,
+			pageY: event.pageY,
 		};
 	}
 

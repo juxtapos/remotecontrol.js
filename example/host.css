@@ -1,6 +1,24 @@
 body {
-	background-color: rgba(108, 16, 39, 1);
+	background-color: rgba(108, 108, 108, 1);
 }
+
+.box {
+	position: relative;
+	background-color: rgba(204,220,140, 1);	
+	width: 140px;
+	height: 80px;
+	margin: 20px;
+	float: left;
+	box-shadow: 10px 8px 10px 0px rgba(0, 0, 0, 0.5);
+}
+
+.focused {
+	box-shadow: 2px 2px 10px 0px rgba(0, 0, 0, 0.5);
+	left: 4px;
+	top: 3px;
+}
+
+
 
 #box {
 	width: 200px;
