@@ -42,6 +42,7 @@
 					'MSPointerDown',
 					'touchstart', 
 					'touchmove',
+
 					'touchend',
 					'mousedown',
 					'mousemove',
@@ -64,6 +65,23 @@
 			var mouseStartDelta;
 			var currentCursorTarget;
 
+			function getCoordinates (event) {
+				switch (event.type) {
+					case 'touchmove': 
+						return {
+							x: event.touches[0].clientX,
+							y: event.touches[0].clientY	
+						}
+					case 'mousemove':
+						return {
+							x: event.clientX,
+							y: event.clientY	
+						}
+					default: 
+						return;
+				}
+			}
+
 			function up (event) {
 				mouseStartDelta = null;
 				$('#rcjscursor').hide();
@@ -73,20 +91,27 @@
 				console.log('down');
 				$('#rcjscursor').show();
 				var curpos = $('#rcjscursor').position();
-				mouseStartDelta = { x: event.clientX - curpos.left, y: event.clientY - curpos.top };
+				var coords = getCoordinates(event);
+				mouseStartDelta = { x: coords.x - curpos.left, y: coords.y - curpos.top };
 			}
 
 			function move (event) {
-				console.log(event.clientX);
+				var x, y, target, coords = getCoordinates(event);
+				//console.log(event);
 				if (mouseStartDelta) {
+
+					
+
 					$('#rcjscursor').css( { 
-						left: event.clientX - mouseStartDelta.x + 'px', 
-						top: event.clientY - mouseStartDelta.y + 'px' 
+						left: coords.x - mouseStartDelta.x + 'px', 
+						top: coords.y - mouseStartDelta.y + 'px' 
 					} );
+
+					// Hide the cursor before getting elementFromPoint, so we don't catch the 
+					// cursor itself.
 					$('#rcjscursor').toggle();
-					var target;
-					if ( ( target = document.elementFromPoint(event.clientX - mouseStartDelta.x, 
-							event.clientY - mouseStartDelta.y ) ) ) {
+					if ( ( target = document.elementFromPoint(coords.x - mouseStartDelta.x, 
+							coords.y - mouseStartDelta.y ) ) ) {
 						$('#rcjscursor').toggle();	
 						$(target).addClass('focused');
 						if (currentCursorTarget && currentCursorTarget != target) { 
