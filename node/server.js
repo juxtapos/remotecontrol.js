@@ -98,7 +98,6 @@ io.sockets.on('connection', function (socket) {
 	});
 
 	socket.on('rcjs:event', function (data) {
-		console.log('fooooo');
 		var token = tokens[data.tokenId];
 		if (!token) {
 			socket.emit('rcjs:receiverDisconnect', { error: 'tokenId missing, disconnect.' } );

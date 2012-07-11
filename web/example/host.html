@@ -2,11 +2,14 @@
 <html>
 <head>
 	<title>remotecontrol.js: host application</title>
-	<link rel="stylesheet" href="dist/remotecontrol.js.css" />
+	<link rel="stylesheet" href="remotecontrol.js.css" />
 	<link rel="stylesheet" href="host.css" />
-	<script src="dist/socket.io.min.js"></script>
-	<script src="dist/remotecontrol.js.host.js"></script>
+
+	<script src="socket.io.min.js"></script>
+	<script src="../js/remotecontrol.js.host.js"></script>
+
 	<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script>
+
 	<style>
 	#rcjscursor {
 		width: 20px;
@@ -34,7 +37,7 @@
 
 	function init (options) {
 		var	rch = new RemoteControlHost({ 
-				host: 'cumulus.local', 
+				host: '127.0.0.1', 
 				port: 1337,
 				capture: [
 					'MSPointerUp',
@@ -42,7 +45,6 @@
 					'MSPointerDown',
 					'touchstart', 
 					'touchmove',
-
 					'touchend',
 					'mousedown',
 					'mousemove',
@@ -66,12 +68,15 @@
 			var currentCursorTarget;
 
 			function getCoordinates (event) {
+				console.log('getCoords: ' + event.type);
 				switch (event.type) {
+					case 'touchstart':
 					case 'touchmove': 
 						return {
 							x: event.touches[0].clientX,
 							y: event.touches[0].clientY	
 						}
+					case 'mousedown':
 					case 'mousemove':
 						return {
 							x: event.clientX,
