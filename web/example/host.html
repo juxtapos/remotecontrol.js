@@ -1,41 +1,25 @@
 <!DOCTYPE html>
 <html>
 <head>
-	<title>remotecontrol.js: host application</title>
-	<link rel="stylesheet" href="remotecontrol.js.css" />
-	<link rel="stylesheet" href="host.css" />
+	<title>remotecontrol.js: Examples</title>
+	<meta http-equiv="content-type" content="text/html; charset=UTF-8">
+
+	<link rel="stylesheet" href="remotecontrol.js.css">
+	<link rel="stylesheet" href="host.css">
 
 	<script src="socket.io.min.js"></script>
 	<script src="../js/remotecontrol.js.host.js"></script>
 
 	<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script>
 
-	<style>
-	#rcjscursor {
-		width: 20px;
-		height: 20px;
-		border-radius: 10px;
-		background-color: rgba(255, 255, 255, 0.4);
-		border: 1px solid black;
-		position: absolute;
-		top: 10px;
-		left: 10px;
-		z-index: 999;
-		display: none;
-	}
-	</style>
-
 	<script>
+	document.addEventListener('DOMContentLoaded', init, false);
 
-	document.addEventListener('DOMContentLoaded', function () {
-		var rch = init();
-
+	function init (options) {
 		for (var i = 10; i--;) {
 			$(document.body).append('<div class="box">&nbsp;</div>');
 		}
-	});
 
-	function init (options) {
 		var	rch = new RemoteControlHost({ 
 				host: '127.0.0.1', 
 				port: 1337,
@@ -63,12 +47,11 @@
 		Cursor(rch);
 
 		function Cursor(rch) {
-			$('<div id="rcjscursor"></div>').appendTo(document.body);
-			var mouseStartDelta;
-			var currentCursorTarget;
+			var mouseStartDelta, currentCursorTarget, cursorId = 'rcjscursor', cursor;
+
+			cursorElmnt = $('<div class="rcjscursor" id="' + cursorId + '"></div>').appendTo(document.body);
 
 			function getCoordinates (event) {
-				console.log('getCoords: ' + event.type);
 				switch (event.type) {
 					case 'touchstart':
 					case 'touchmove': 
@@ -83,58 +66,54 @@
 							y: event.clientY	
 						}
 					default: 
-						return;
+						return null;
 				}
 			}
 
 			function up (event) {
 				mouseStartDelta = null;
-				$('#rcjscursor').hide();
+				cursorElmnt.hide();
 			}
 
 			function down (event) {
-				console.log('down');
-				$('#rcjscursor').show();
-				var curpos = $('#rcjscursor').position();
-				var coords = getCoordinates(event);
+				cursorElmnt.show();
+				var curpos = cursorElmnt.position(),
+					coords = getCoordinates(event);
 				mouseStartDelta = { x: coords.x - curpos.left, y: coords.y - curpos.top };
 			}
 
 			function move (event) {
 				var x, y, target, coords = getCoordinates(event);
-				//console.log(event);
+				
 				if (mouseStartDelta) {
-
-					
-
-					$('#rcjscursor').css( { 
+					cursorElmnt.css( { 
 						left: coords.x - mouseStartDelta.x + 'px', 
 						top: coords.y - mouseStartDelta.y + 'px' 
 					} );
 
-					// Hide the cursor before getting elementFromPoint, so we don't catch the 
+					// Hide the cursor before getting elementFromPoint, so we don't get the
 					// cursor itself.
-					$('#rcjscursor').toggle();
+					cursorElmnt.toggle();
 					if ( ( target = document.elementFromPoint(coords.x - mouseStartDelta.x, 
 							coords.y - mouseStartDelta.y ) ) ) {
-						$('#rcjscursor').toggle();	
+						cursorElmnt.toggle();	
 						$(target).addClass('focused');
 						if (currentCursorTarget && currentCursorTarget != target) { 
 							$(currentCursorTarget).removeClass('focused');
 						}
 						currentCursorTarget = target;
 					} else {
-						$('#rcjscursor').toggle();	
+						cursorElmnt.toggle();	
 					}
 				}
 			}
 
+			rch.addEventListener('mousedown', down);
+			rch.addEventListener('touchstart', down);
 			rch.addEventListener('mouseup', up);
-			rch.addEventListener('touchstart', up);
+			rch.addEventListener('touchend', up);
 			rch.addEventListener('mousemove', move);
 			rch.addEventListener('touchmove', move);
-			rch.addEventListener('mousedown', down);
-			rch.addEventListener('touchend', down);
 		}
 	}
 	</script>

@@ -69,10 +69,11 @@ function RemoteControl (options) {
 		function copyTouches (prop) {
 			var a = [];
 			console.log('.....');
-			if (event.prop) {
-				console.log('copy ' + event.prop);
+			console.log(event.touches.length);
+			if (event[prop]) {
+				console.log('copy ' + event[prop]);
 				Array.prototype.forEach.call(event[prop], function (touch) {
-					console.log('copying ' + event.prop);
+					console.log('copying ' + event[prop]);
 					a.push(copyTouch(touch));
 				});
 			}
