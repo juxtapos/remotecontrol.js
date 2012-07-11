@@ -1,0 +1,55 @@
+<html>
+<head>
+	<title></title>
+	<script>
+	window.addEventListener('load', init, false);
+
+	function init() {
+		console.log('init');
+
+		document.addEventListener('MSPointerCancel', function (e) {
+			document.removeEventListener('MSPointerMove', z, false);
+		}, false);
+		document.addEventListener('MSGestureInit', function (e) { if (e.preventManipulation) e.preventManipulation(); }, false);
+		document.addEventListener('MSHoldVisual', function (e) { e.preventDefault(); }, false);
+
+		document.addEventListener('MSPointerDown', function () {
+			console.log('down')
+			document.addEventListener('MSPointerMove', z, false);
+		}, false);
+		document.addEventListener('MSPointerUp', function () {
+			console.log('up')
+			document.removeEventListener('MSPointerMove', z, false);
+		}, false);
+		
+
+		function x() {
+		}
+
+		//document.addEventListener('contextmenu', function (e) { e.preventDefault(); }, false);
+		//document.addEventListener('selectstart', function (e) { e.preventDefault(); }, false);
+		
+
+		// document.getElementById('c').addEventListener('MSPointerDown', function () {
+		// 	console.log('down')
+		// 	document.addEventListener('MSPointerMove', z, false);
+		// }, false);
+		
+		//document.addEventListener('MSGestureChange', z, false);
+		//document.addEventListener('MSPointerMove', z, false);
+	}
+
+	function z (event) {
+		console.log('event: ' + event.type);
+	}
+	</script>
+	<style>
+	html, body {
+		overflow: hidden;
+		-ms-content-zooming: none;
+	}
+</head>
+<body>
+<canvas style="width:100%;height:100%;overflow:hidden" id="c"></canvas>
+</body>
+</html>

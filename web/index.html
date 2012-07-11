@@ -1,27 +1,137 @@
 <!DOCTYPE html>
 <html>
 <head>
+    <meta http-equiv="content-type" content="text/html; charset=UTF-8">
 	<title>remotecontrol.js</title>
     <link href='http://fonts.googleapis.com/css?family=Syncopate:400,700' rel='stylesheet' type='text/css'>
-    <link rel="stylesheet" href="css/index.css" type="text/css"/>
+    <link rel="stylesheet" href="css/index.css" type="text/css">
+    <script src="js/socket.io.min.js"></script>
+    <script src="js/remotecontrol.js.host.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script>
+    <script>
+    $(document).ready(init);
+
+    function init (options) {
+        for (var i = 20; i--;) {
+            $('#stage').append('<div class="box">&nbsp;</div>');
+        }
+
+        var rch = new RemoteControlHost({ 
+                host: '127.0.0.1', 
+                port: 1337,
+                capture: [
+                    //'MSPointerUp',
+                    //'MSPointerMove',
+                    //'MSPointerDown',
+                    'touchstart', 
+                    'touchmove',
+                    'touchend',
+                    'mousedown',
+                    'mousemove',
+                    'mouseup'
+                ]
+            });
+
+        document.querySelector('#getTokenButton').addEventListener('click', function () { 
+            rch.requestToken();
+        });
+
+        rch.addEventListener('rcjs:token', function (data) {
+            document.querySelector('#remotecontrol .tokenDisplay').innerHTML = data.tokenId;
+        });
+
+        Cursor(rch);
+
+        function Cursor(rch) {
+            var mouseStartDelta, currentCursorTarget, cursorId = 'rcjscursor', cursor, cursorElmt;
+            cursorElmnt = $('<div class="rcjscursor" id="' + cursorId + '"></div>').appendTo(document.body);
+
+            function getCoordinates (event) {
+                switch (event.type) {
+                    case 'touchstart':
+                    case 'touchmove': 
+                        return {
+                            x: event.touches[0].clientX,
+                            y: event.touches[0].clientY 
+                        }
+                    case 'mousedown':
+                    case 'mousemove':
+                        return {
+                            x: event.clientX,
+                            y: event.clientY    
+                        }
+                    default: 
+                        return null;
+                }
+            }
+
+            function up (event) {
+                mouseStartDelta = null;
+                cursorElmnt.hide();
+            }
+
+            function down (event) {
+                cursorElmnt.show();
+                var curpos = cursorElmnt.position(),
+                    coords = getCoordinates(event);
+                mouseStartDelta = { x: coords.x - curpos.left, y: coords.y - curpos.top };
+            }
+
+            function move (event) {
+                var x, y, target, coords = getCoordinates(event);
+                
+                if (mouseStartDelta) {
+                    cursorElmnt.css( { 
+                        left: coords.x - mouseStartDelta.x + 'px', 
+                        top: coords.y - mouseStartDelta.y + 'px' 
+                    } );
+
+                    // Hide the cursor before getting elementFromPoint, so we don't get the
+                    // cursor itself.
+                    cursorElmnt.toggle();
+                    if ( ( target = document.elementFromPoint(coords.x - mouseStartDelta.x, 
+                            coords.y - mouseStartDelta.y ) ) ) {
+                        cursorElmnt.toggle();   
+                        $(target).addClass('focused');
+                        if (currentCursorTarget && currentCursorTarget != target) {
+                            //window.setTimeout(function () {
+                                $(currentCursorTarget).removeClass('focused');
+                            //}, 300); 
+                            
+                        }
+                        currentCursorTarget = target;
+                    } else {
+                        cursorElmnt.toggle();   
+                    }
+                }
+            }
+
+            rch.addEventListener('mousedown', down);
+            rch.addEventListener('touchstart', down);
+            rch.addEventListener('mouseup', up);
+            rch.addEventListener('touchend', up);
+            rch.addEventListener('mousemove', move);
+            rch.addEventListener('touchmove', move);
+        }
+    }
+    
+    </script>
 </head>
 <body>
-    
-	<div class="remotecontrol">
+	<div class="remotecontrol" id="remotecontrol">
         <label>remotecontrol.js</label>
-        <p>Click the button to get a fresh token to use on your mobile device.</p>
-        <button>
+        <p>Click the button to get a fresh token to enter on your mobile device</p>
+        <button id="getTokenButton">
             <img src="images/reload.png"/><span>Token</span></button>
-        <div class="token">&nbsp;</div>
-        <p>Select a demo scenario:</p>
+        <div class="tokenDisplay">&lt;token&gt;</div>
+        <p>Select demo scenario</p>
         <select>    
-            <option>Rotate Something</option>
+            <option>Selection</option>
             <option>Drag Something</option>
             <option>Contextmenu</option>
             <option>Rotate Canvas</option>            
         </select>
 	</div>
-<!--	<p>Open the <a href="host.html">host application</a> in a desktop browser.</p>
-	<p>Open the <a href="remote.html">remote application</a> on your touch device (in a decent Webkit browser).</p>-->
+    <div id="stage"></div>
 </body>
 </html>

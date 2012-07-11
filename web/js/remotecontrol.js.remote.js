@@ -6,6 +6,7 @@ function RemoteControl (options) {
 		self = this;
 	this.key = null; // supplied by server on successful peering
 	this.captureEvents = []; // supplied from receiver
+	this.events = {};
 	this.token = null;
 
 	socket.on('connect', function () {
@@ -23,11 +24,12 @@ function RemoteControl (options) {
 		socket.on('rcjs:supplyToken', function (data) {
 			if (data.error) {
 				console.log(data.error);
+				this.emit('rcjs:error', { msg: data.error } );
 			}
 		});
 
 		socket.on('disconnect', function (data) {
-			console.log(data.error);
+			//console.log(data.error);
 		});
 	});
 
@@ -42,11 +44,9 @@ function RemoteControl (options) {
 	}
 
 	function capture(doCapture, events) {
-		console.log('capture');
 		var method = doCapture ? window.addEventListener : window.removeEventListener;
 		self.captureEvents = events || self.captureEvents;
 		self.captureEvents.forEach(function (type) { 
-			console.log('capture ' + type);
 			try {
 				method(type, genericEventHandler, false); 
 			} catch (ex) {
@@ -68,12 +68,8 @@ function RemoteControl (options) {
 
 		function copyTouches (prop) {
 			var a = [];
-			console.log('.....');
-			console.log(event.touches.length);
 			if (event[prop]) {
-				console.log('copy ' + event[prop]);
 				Array.prototype.forEach.call(event[prop], function (touch) {
-					console.log('copying ' + event[prop]);
 					a.push(copyTouch(touch));
 				});
 			}
@@ -108,10 +104,64 @@ function RemoteControl (options) {
 
 	function supplyToken (tokenId) {
 		self.tokenId = tokenId;
-		socket.emit('rcjs:supplyToken', { tokenId: tokenId } );
+		emitEvent('rcjs:supplyToken', { tokenId: tokenId } );
+	}
+
+	/**
+	 * Simple event listener implementation. Allows for the registration of all events that are
+	 * captured per options, plus event types that are prefixed 'rcjs:'.
+	 * 
+	 * @param type {String} Event type identifier.
+	 * @param handler {Function} Event handler function.
+	 */
+	function addEventListener (type, handler) {
+		if (!type.indexOf('rcjs:') || ~self.captureEvents.indexOf(type)) {
+			if (!(type in self.events)) {
+				self.events[type] = [];
+			}
+			self.events[type].push(handler);
+		}
+	}
+
+	/**
+	 * Removes the given type and handler pair from the list of registered event listeners. 
+	 * 
+	 * @param type {String} Event type. 
+	 * @param handler {Function} Handler function. 
+	 */
+	function removeEventListener (type, handler) {
+		if (self.events[type]) {
+			for (var i = 0, 
+					 et = self.events[type], 
+					 etl = et.length; i < l; i++) {
+				if (et[i] === handler) {
+					self.events[type] = et.slice(0, i == 0 ? 0 : i  >= etl ? etl - 1 : i)
+									 	  .concat(et.slice(i + 1, etl));
+					break;
+				}
+			}
+		}
+	}
+
+	/**
+	 * Emits any type of event to all registered listeners. Additional arguments used for calling
+	 * this method are used as listener function arguments. 
+	 * 
+	 * @param type {String} Event type. 
+	 * @param handler {Function} Handler function. 
+	 */
+	function emitEvent (type) {
+		var args = arguments;
+		if (self.events[type]) {
+			self.events[type].forEach(function (obj) {
+				obj.apply(self, Array.prototype.slice.call(args, 1));
+			});
+		}
 	}
 
 	return {
-		supplyToken: supplyToken
+		supplyToken: supplyToken,
+		addEventListener: addEventListener,
+		removeEventListener: removeEventListener
 	}
 }
