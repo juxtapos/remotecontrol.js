@@ -1,12 +1,14 @@
 body {
-	background-color: rgba(108, 16, 39, 1);
+	Xbackground-color: rgba(108, 16, 39, 1);
+	background-color: rgba(108, 108, 108, 1);
+
 }
 
 /*
  * Important for Internet Explorer 10, so touch events are consumed somewhere else 
  */
 html, body {
-	X-ms-content-zooming: none;
-	Xoverflow: hidden;
+	/*-ms-content-zooming: none;
+	overflow: hidden;*/
 	-ms-touch-action: none;
 }

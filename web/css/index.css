@@ -112,22 +112,7 @@ body {
 
 
 
-#stage {
-    margin: 0 0 0 300px;
-    padding: 10px;
-    background-color: rgba(0, 0 , 0, 0.1);
-    height: 100%;
-    box-sizing: border-box;
-}
 
-stage:after {
-    content: ".";
-    display: block;
-    clear: both;
-    visibility: hidden;
-    line-height: 0;
-    height: 0;
-}
 
 
 /*

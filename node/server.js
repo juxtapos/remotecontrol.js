@@ -72,10 +72,9 @@ io.sockets.on('connection', function (socket) {
     // Response: on error sends rcjs:supplyToken message back to source, on success a 
     // rcjs:registerSender
 	socket.on('rcjs:supplyToken', function (data) {
-		var token;
-		console.log('supplyToken');
+		var token, receiver;
 		if ( (token = tokens[data.tokenId]) ) {
-			var receiver = sockets[token.receiverId].socket;
+			receiver = sockets[token.receiverId].socket;
 			if (receiver.sender) {
 				socket.emit('rcjs:supplyToken', { error: 'invalid token (already in use)' } );
 			} else if (new Date().getTime() > token.timeStamp + TOKEN_TTL) {

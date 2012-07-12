@@ -2,8 +2,8 @@ function RemoteControlHost (options) {
 	var options = options || {},
 		socket = io.connect(options.host + ':' + options.port),
 		self = this;
-	this.captureEvents = options.capture || [];
-	this.events = {};
+	this.captureEvents = options.capture || []; // required by the EventHandler 'mixin' 
+	this.events = {};	// required by the EventHandler 'mixin'
 	
 	socket.on('connect', function () {
 		console.log('connected to server');
@@ -11,18 +11,18 @@ function RemoteControlHost (options) {
 		// Request: from server to receiver after a valid rcjs:supplyToken message from sender. 
 		// Response: rcjs:confirmRegister message to server.  
 		socket.on('rcjs:registerSender', function (data) {
+			console.log('sender registered');
 			socket.emit('rcjs:confirmRegistration', { tokenId: data.tokenId, events: self.captureEvents } );
 			socket.on('rcjs:event', function (data) {
-				console.log('event ' + data.type);
 				type = data.type;
-				if (type) { emitEvent(type, data.event); }
+				if (type) { self.emitEvent(type, data.event); }
 			} );
 		});
 
 		// Request: from server as response to rcjs:requestToken message with tokenId property.
 		// Emits rcjs:requestToken event 
 		socket.on('rcjs:token', function (data) {
-			emitEvent('rcjs:token', data);
+			self.emitEvent('rcjs:token', data);
 		});
 	});
 
@@ -33,71 +33,29 @@ function RemoteControlHost (options) {
 		socket.emit('rcjs:requestToken');
 	}
 
-	/**
-	 * Simple event listener implementation. Allows for the registration of all events that are
-	 * captured per options, plus event types that are prefixed 'rcjs:'.
-	 * 
-	 * @param type {String} Event type identifier.
-	 * @param handler {Function} Event handler function.
-	 */
-	function addEventListener (type, handler) {
-		if (!type.indexOf('rcjs:') || ~self.captureEvents.indexOf(type)) {
-			if (!(type in self.events)) {
-				self.events[type] = [];
-			}
-			self.events[type].push(handler);
-		}
-	}
-
-	/**
-	 * Removes the given type and handler pair from the list of registered event listeners. 
-	 * 
-	 * @param type {String} Event type. 
-	 * @param handler {Function} Handler function. 
-	 */
-	function removeEventListener (type, handler) {
-		if (self.events[type]) {
-			for (var i = 0, 
-					 et = self.events[type], 
-					 etl = et.length; i < l; i++) {
-				if (et[i] === handler) {
-					self.events[type] = et.slice(0, i == 0 ? 0 : i  >= etl ? etl - 1 : i)
-									 	  .concat(et.slice(i + 1, etl));
-					break;
-				}
-			}
-		}
-	}
-
-	/**
-	 * Emits any type of event to all registered listeners. Additional arguments used for calling
-	 * this method are used as listener function arguments. 
-	 * 
-	 * @param type {String} Event type. 
-	 * @param handler {Function} Handler function. 
-	 */
-	function emitEvent (type) {
-		var args = arguments;
-		if (self.events[type]) {
-			self.events[type].forEach(function (obj) {
-				obj.apply(self, Array.prototype.slice.call(args, 1));
-			});
-		}
-	}
-
 	function plugin (objs) {
 		for (event in objs) {
 			this.addEventListener(event, objs[event]);
 		}
 	}
 
-	/**
-	 * Return public symbols.
-	 */
+	this.addEventListener = function () {
+		EventHandler.addEventListener.apply(self, arguments);
+	}
+
+	this.removeEventListener = function () {
+		EventHandler.removeEventListener.apply(self, arguments);
+	}
+
+	this.emitEvent = function () {
+		EventHandler.emitEvent.apply(self, arguments);
+	}
+
 	return {
 		requestToken: requestToken, 
-		addEventListener: addEventListener,
-		removeEventListener: removeEventListener,
+		addEventListener: this.addEventListener,
+		removeEventListener: this.removeEventListener,
+		emitEvent: this.emitEvent,
 		plugin: plugin
 	};
 }

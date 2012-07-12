@@ -5,7 +5,26 @@
 	<title>remotecontrol.js</title>
     <link href='http://fonts.googleapis.com/css?family=Syncopate:400,700' rel='stylesheet' type='text/css'>
     <link rel="stylesheet" href="css/index.css" type="text/css">
+    <style>
+    #stage {
+        margin: 0 0 0 300px;
+        padding: 10px;
+        background-color: rgba(0, 0 , 0, 0.1);
+        height: 100%;
+        box-sizing: border-box;
+    }
+
+    stage:after {
+        content: ".";
+        display: block;
+        clear: both;
+        visibility: hidden;
+        line-height: 0;
+        height: 0;
+    }
+    </style>
     <script src="js/socket.io.min.js"></script>
+    <script src="js/events.js"></script>
     <script src="js/remotecontrol.js.host.js"></script>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script>
     <script>
