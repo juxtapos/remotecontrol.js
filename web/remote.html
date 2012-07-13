@@ -20,9 +20,26 @@
         });
 
         remotecontrol.addEventListener('rcjs:error', function (event) {
-            $('#tokenField').attr('value', 'event.msg');
-            console.log('slf')
+            $('#remotecontrol .msg').empty().append(event.msg);
         });
+        remotecontrol.addEventListener('rcjs:connected', function (event) {
+            $('#remotecontrol .msg').empty().append('Connected');
+        });
+        remotecontrol.addEventListener('rcjs:startCapture', function (event) {
+            $('#remotecontrol .msg').empty().append('Capturing');
+        });
+        remotecontrol.addEventListener('rcjs:receiverDisconnect', function (event) {
+            $('#remotecontrol .msg').empty().append('Disconnected');
+        });
+        remotecontrol.addEventListener('rcjs:serverDisconnect', function (event) {
+            $('#remotecontrol .msg').empty().append('Server disconnected');
+        });
+    }
+
+    function log(msg) {
+        var l = $('#logger');
+        l.append('<div>' + msg + '</div>');
+        l.get()[0].scrollTop = l.get()[0].scrollHeight;
     }
     
     </script>
@@ -32,7 +49,9 @@
         <label>remotecontrol.js</label>
         <input type="text" id="tokenField" value="1">
         <button id="tokenSend"><span>Register</span></button>
+        <div class="msg"></div>
 	</div>
-    <div id="stage"></div>
+    <div id="logger" style="position:absolute;width:400px;background-color:rgba(100,100,100,1);height:580px;right:10px;overflow-x:hidden;overflow-y:scroll;-webkit-overflow-scrolling: touch;">
+    </div>
 </body>
 </html>

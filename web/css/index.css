@@ -96,6 +96,12 @@ body {
     font-size: 20px;
 }
 
+.remotecontrol .msg {
+    font-size: 10px;
+    text-align: center;
+    margin: 10px;
+}
+
 .rcjscursor {
     width: 20px;
     height: 20px;
