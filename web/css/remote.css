@@ -8,7 +8,7 @@ body {
  * Important for Internet Explorer 10, so touch events are consumed somewhere else 
  */
 html, body {
-	/*-ms-content-zooming: none;
-	overflow: hidden;*/
+	-ms-content-zooming: none;
+	Xoverflow: hidden;
 	-ms-touch-action: none;
 }

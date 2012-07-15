@@ -14,6 +14,9 @@
     $(document).ready(init);
 
     function init (options) {
+
+        $(document.body).get()[0].bounces = 'no';
+
         var remotecontrol = new RemoteControl( { host: location.host, port: 1337 } );
         document.getElementById('tokenSend').addEventListener('click', function () {
             remotecontrol.supplyToken(document.getElementById('tokenField').value);
