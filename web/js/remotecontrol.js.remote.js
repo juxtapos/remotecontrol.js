@@ -153,8 +153,7 @@ function RemoteControl (options) {
 					beta: event.beta,
 					gamma: event.gamma
 				}
-				break;
-			// XXX This must be throttled, otherwise it fires even when laying flat on a table.
+				break;x
 			// http://www.w3.org/TR/orientation-event/#devicemotion
 			case 'devicemotion' :
 				copy = {

@@ -20,7 +20,7 @@
             host: location.host, 
             port: 1337,
             showTouches: true,
-            deviceEventInterval: 200
+            deviceEventInterval: 100
         });
 
         document.getElementById('tokenSend').addEventListener('click', function () {
@@ -52,6 +52,8 @@
         document.addEventListener('touchmove', function (event) {
             event.preventDefault();
         });
+
+        //log(window.orientation);
     }
 
     function log (msg) {

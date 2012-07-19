@@ -196,15 +196,27 @@ function Scenario4 (rch) {
         }
 
         rch.addEventListener('devicemotion', function (event) {
-            // if (event.acceleration.x > 1) {
+            var threshold = 0.5;
 
+            var left = event.acceleration.x < -threshold;
+            var right = event.acceleration.x > threshold;
+            var up = event.acceleration.z < -threshold;
+            var down = event.acceleration.z > threshold;
+            var back = event.acceleration.y < -threshold;
+            var forward = event.acceleration.y > threshold;
 
+            console.log(left ? 'left ' : '');
 
-                console.log(event.acceleration.x + ',' + event.acceleration.y + ',' + event.acceleration.z);   
-                $('#C' + selected).removeClass('high');
+            //console.log(back+","+forward)
+
+            // console.log(event.acceleration.x + ',' + event.acceleration.y + ',' + event.acceleration.z);   
+            $('#C' + selected).removeClass('high');
+            if (up) {
                 selected += 1;
-                $('#C' + selected).addClass('high');
-            // }
+            } else if (down) {
+                selected -= 1;
+            }
+            $('#C' + selected).addClass('high');
         });
 
         $('#C' + selected).addClass('high');
