@@ -35,7 +35,7 @@ body {
     top: 0px;
     bottom: 0px;
     opacity: 0;
-    -webkit-transition: opacity 1s linear;
+    transition: opacity 1s linear;
     height: 100%;
     box-sizing: border-box;
 }
@@ -59,8 +59,6 @@ body {
     position: absolute;
     top: 0;
     left: 0;
-    xwidth: 500px;
-    xheight: 500px;
 }
 
 #scenarios.on {

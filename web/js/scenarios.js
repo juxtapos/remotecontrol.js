@@ -156,6 +156,7 @@ function Scenario3 (rch) {
                 $(photo).find('img').on('load', function () {
                     var img = $(this);
                     photo.css('-webkit-transform', ' rotate(' + (Math.random() * 90 - 45) + 'deg)');
+                    photo.css('-moz-transform', ' rotate(' + (Math.random() * 90 - 45) + 'deg)');
                     photo.css({
                         top: Math.max(Math.random() * stage.height() - photo.height(), 0) + "px",
                         left: Math.max(Math.random() * stage.width() - photo.width(), 0) + "px",
@@ -177,6 +178,7 @@ function Scenario3 (rch) {
             var deg = rotation < 0 ? 180 + (rotation * -1) : rotation;
             console.log('pinch ' + deg);
             $(selectedPhoto).css('-webkit-transform', 'rotate(' + deg + 'deg)');
+            $(selectedPhoto).css('-moz-transform', 'rotate(' + deg + 'deg)');
         });
 
     }
@@ -204,7 +206,7 @@ events are distinguished and have three types each, e.g. rcjs:rotationstart, rcj
 function Scenario4 (rch) {
 
     function init (container) {
-        
+
         rch.addEventListener('rcjs:pinch', function (event) {
             console.log('pinching ' + event.rotation);
         });

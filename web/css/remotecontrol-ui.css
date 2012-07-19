@@ -1,7 +1,7 @@
 .remotecontrol {
     width: 250px;
     border-radius: 20px;
-    background: -webkit-linear-gradient(
+    background: linear-gradient(
         top, 
         rgba(210, 210, 212, 0.9) 0%,
         rgba(210, 210, 210, 0.1) 100%);
@@ -34,7 +34,7 @@
     border-radius: 10px;
     background-color: #414042;
     padding-left: 14px;
-    background: -webkit-linear-gradient(#818082, #313032);
+    background: linear-gradient(#818082, #313032);
     font-family: Droid Sans;
 }
 
@@ -55,7 +55,7 @@
 }
 
 .remotecontrol button:active {
-    background: -webkit-linear-gradient(#515052, #414042);
+    background: linear-gradient(#515052, #414042);
 }
 
 .remotecontrol button:active span {
@@ -90,12 +90,12 @@
 }
 
 .remotecontrol .msg.pulse {
-    -webkit-animation: pulsate 1.5s ease-in;
-    -webkit-animation-iteration-count: infinite; 
+    animation: pulsate 1.5s ease-in;
+    animation-iteration-count: infinite; 
     font-weight: bold;
 }
 
-@-webkit-keyframes pulsate {
+@keyframes pulsate {
     0% { 
         opacity: 0; 
         color: white;
@@ -118,8 +118,8 @@
     z-index: 999;
     display: none;
     opacity 1: 
-    -webkit-transition: opacity, display;
-    -webkit-transition-duration: 500ms;
+    transition: opacity, display;
+    transition-duration: 500ms;
 }
 
 .rcjscursor.off {

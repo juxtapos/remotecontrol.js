@@ -2,7 +2,7 @@
 * SCENARIO 1
 */
 .Scenario1.stage {
-    background: -webkit-radial-gradient(1000px 80px, #505050 0%, #202020 100%);
+    background: radial-gradient(1000px 80px, #505050 0%, #202020 100%);
     padding: 25px;
 }
 
@@ -14,8 +14,8 @@
     margin: 20px;
     float: left;
     box-shadow: 2px 2px 10px 0px rgba(0, 0, 0, 0.5);
-    -webkit-transition-property: box-shadow, left, top;
-    -webkit-transition-duration: 1s;
+    transition-property: box-shadow, left, top;
+    transition-duration: 1s;
 }
 
 .Scenario1 .box.focused {
@@ -42,8 +42,8 @@
     margin: 20px;
     float: left;
     box-shadow: 2px 2px 10px 0px rgba(0, 0, 0, 0.5);
-    -webkit-transition-property: box-shadow, left, top;
-    -webkit-transition-duration: 1s;
+    transition-property: box-shadow, left, top;
+    transition-duration: 1s;
 }
 
 /**
