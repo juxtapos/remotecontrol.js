@@ -1,0 +1,117 @@
+.remotecontrol {
+    top: 30px;
+    left: 20px;
+    position: absolute;
+    width: 250px;
+    border-radius: 20px;
+    background: -webkit-linear-gradient(
+        top, 
+        rgba(210, 210, 212, 0.9) 0%,
+        rgba(210, 210, 210, 0.1) 100%);
+    background-color: gray;
+    box-shadow: 4px 4px 4px 0px rgba(0, 0, 0, 0.5);
+    Xfont-family: Verdana, Arial, sans-serif;
+    padding-bottom: 16px;
+}
+
+.remotecontrol p {
+    font-size: 10px;
+    width: 80%;
+    margin: 10px auto;
+}
+
+.remotecontrol label {
+    display: block;
+    width: 100%;
+    text-align: center;
+    color: #000;
+    margin: 18px 0 0 0;
+    letter-spacing: 3px;
+    font-size: 14px;
+    Xfont-family: 'Syncopate', sans-serif;
+}
+
+.remotecontrol button {
+    display: block;
+    margin: 0 auto ;
+    border: 1px solid #303030;
+    height: 30px;
+    width: 200px;
+    border-radius: 10px;
+    background-color: #414042;
+    padding-left: 14px;
+    background: -webkit-linear-gradient(#818082, #313032);
+    font-family: Droid Sans;
+}
+
+.remotecontrol button span {
+    font-size: 18px;
+    line-height: 20px;
+    color: #C2B59B;
+    letter-spacing: 2px;
+}
+
+.remotecontrol button img + span {
+    margin-left: -20px;
+}
+
+.remotecontrol button img {
+    float: left;
+    margin-top: 2px;
+}
+
+.remotecontrol button:active {
+    background: -webkit-linear-gradient(#515052, #414042);
+}
+
+.remotecontrol button:active span {
+    color: orange;
+}
+
+.remotecontrol .tokenDisplay {
+    text-align: center;
+    line-height: 2.5em;
+}
+
+.remotecontrol select {
+    display: block;
+    width: 80%;
+    margin: auto;
+    font-family: Droid Sans;
+}
+
+.remotecontrol input {
+    text-align: center;
+    margin: 10px auto;
+    xbackground-color: red;
+    display: block;
+    width: 200px;
+    font-size: 20px;
+}
+
+.remotecontrol .msg {
+    font-size: 10px;
+    text-align: center;
+    margin: 10px;
+}
+
+.rcjscursor {
+    width: 20px;
+    height: 20px;
+    border-radius: 10px;
+    background-color: rgba(255, 255, 255, 0.4);
+    border: 1px solid black;
+    position: absolute;
+    top: 10px;
+    left: 10px;
+    z-index: 999;
+    display: none;
+    opacity 1: 
+    -webkit-transition: opacity, display;
+    -webkit-transition-duration: 500ms;
+}
+
+.rcjscursor.off {
+    opacity: 0;
+    display: none;
+}

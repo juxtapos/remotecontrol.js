@@ -1,14 +1,22 @@
 body {
-	Xbackground-color: rgba(108, 16, 39, 1);
-	background-color: rgba(108, 108, 108, 1);
-
+	background: none;
+	background-color: rgba(80, 80, 80, 1);
 }
 
 /*
- * Important for Internet Explorer 10, so touch events are consumed somewhere else 
+ * For Internet Explorer 10, prevents zoom gesture in Metro mode.
  */
 html, body {
 	-ms-content-zooming: none;
-	Xoverflow: hidden;
 	-ms-touch-action: none;
+}
+
+.touch {
+    position: absolute;
+    border: 1px solid white; 
+    border-radius: 20px;
+    box-shadow: 0 0 10px 2px rgba(255, 255, 255, 0.5);
+    width: 40px;
+    height: 40px;
+    display: none;
 }

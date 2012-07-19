@@ -1,143 +1,71 @@
+@import url(remotecontrol-ui.css);
+@import url(scenarios.css);
+
 html {
-    background-color: #024d70;
     height: 100%;
 }
 
 body {
     margin: 0;
-    padding: 0;   
-    xbackground: -webkit-linear-gradient(top, #5a5a5a 0%, black 800px);    
+    padding: 0;
+    height: 100%;
+    font-family: Droid Sans;
+}
+
+#sidebar {
+    background-color: #303030;
+    width: 300px;
+    height: 100%;
+    border-right: 1px solid black;
+}
+
+#scenarioDescription {
+    padding: 300px 20px 0px;
+    color: white;   
+}
+
+#scenarioDescription h1 {
+    font-size: 20px;
+}
+#scenarioDescription p {
+    font-size: 80%;
+}
+
+#scenarios {
+    position: absolute;
+    left: 301px; 
+    right: 0px;
+    top: 0px;
+    bottom: 0px;
+    opacity: 0;
+    -webkit-transition: opacity 1s linear;
+    height: 100%;
+    box-sizing: border-box;
+}
+
+#scenarios .stage {
+    position: relative;
+    overflow: hidden;
     height: 100%;
 }
 
-.remotecontrol {
-    top: 30px;
-    left: 20px;
+#scenarios .stage:after {
+    content: ".";
+    display: block;
+    clear: both;
+    visibility: hidden;
+    line-height: 0;
+    height: 0;
+}
+
+#scenarios .stage canvas {
     position: absolute;
-    width: 250px;
-    border-radius: 20px;
-    background: -webkit-linear-gradient(
-        top, 
-        rgba(210, 210, 212, 0.9) 0%,
-        rgba(210, 210, 210, 0.1) 100%);
-    background-color: gray;
-    box-shadow: 4px 4px 4px 0px rgba(0, 0, 0, 0.5);
-    font-family: Verdana, Arial, sans-serif;
-    padding-bottom: 16px;
+    top: 0;
+    left: 0;
+    xwidth: 500px;
+    xheight: 500px;
 }
 
-.remotecontrol p {
-    font-size: 10px;
-    width: 80%;
-    margin: 10px auto;
-}
-
-.remotecontrol label {
-    display: block;
-    width: 100%;
-    text-align: center;
-    color: #000;
-    margin: 18px 0 0 0;
-    letter-spacing: 3px;
-    font-size: 14px;
-    font-family: 'Syncopate', sans-serif;
-}
-
-.remotecontrol button {
-    display: block;
-    margin: 0 auto ;
-    border: 1px solid #303030;
-    height: 50px;
-    width: 200px;
-    border-radius: 26px;
-    background-color: #414042;
-    padding-left: 14px;
-    background: -webkit-linear-gradient(#818082, #313032);
-}
-
-.remotecontrol span {
-    font-size: 18px;
-    line-height: 30px;
-    margin-left: -20px;
-    color: #C2B59B;
-    letter-spacing: 2px;
-    font-family: Verdana, Arial, sans-serif;
-}
-
-.remotecontrol button img {
-    float: left;
-}
-
-.remotecontrol button:active {
-    background: -webkit-linear-gradient(#515052, #414042);
-}
-
-.remotecontrol button:active span {
-    color: orange;
-}
-
-.remotecontrol .tokenDisplay {
-    text-align: center;
-    line-height: 3em;
-}
-
-.remotecontrol select {
-    display: block;
-    width: 80%;
-    margin: auto;
-}
-
-.remotecontrol input {
-    text-align: center;
-    margin: 10px auto;
-    xbackground-color: red;
-    display: block;
-    width: 200px;
-    font-size: 20px;
-}
-
-.remotecontrol .msg {
-    font-size: 10px;
-    text-align: center;
-    margin: 10px;
-}
-
-.rcjscursor {
-    width: 20px;
-    height: 20px;
-    border-radius: 10px;
-    background-color: rgba(255, 255, 255, 0.4);
-    border: 1px solid black;
-    position: absolute;
-    top: 10px;
-    left: 10px;
-    z-index: 999;
-    display: none;
-}
-
-
-
-
-
-
-
-/*
-* SCENARIO 1
-*/
-.box {
-    position: relative;
-    background-color: rgba(204,220,140, 1); 
-    width: 140px;
-    height: 80px;
-    margin: 20px;
-    float: left;
-    box-shadow: 14px 12px 20px 0px rgba(0, 0, 0, 0.4);
-}
-
-.box.focused {
-    box-shadow: 2px 2px 10px 0px rgba(0, 0, 0, 0.5);
-    left: 7px;
-    top: 5px;
-    border: 2px solid white;
-    margin: 18px;
+#scenarios.on {
+    opacity: 1;
 }

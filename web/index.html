@@ -3,39 +3,44 @@
 <head>
     <meta http-equiv="content-type" content="text/html; charset=UTF-8">
 	<title>remotecontrol.js</title>
-    <link href='http://fonts.googleapis.com/css?family=Syncopate:400,700' rel='stylesheet' type='text/css'>
+    <!--<link href='http://fonts.googleapis.com/css?family=Syncopate:400,700' rel='stylesheet' type='text/css'>-->
+    <!--<link href='http://fonts.googleapis.com/css?family=Droid+Serif' rel='stylesheet' type='text/css'>-->
+    <link href='http://fonts.googleapis.com/css?family=Droid+Sans' rel='stylesheet' type='text/css'>
     <link rel="stylesheet" href="css/index.css" type="text/css">
-    <style>
-    #stage {
-        margin: 0 0 0 300px;
-        padding: 10px;
-        background-color: rgba(0, 0 , 0, 0.1);
-        height: 100%;
-        box-sizing: border-box;
-    }
-
-    stage:after {
-        content: ".";
-        display: block;
-        clear: both;
-        visibility: hidden;
-        line-height: 0;
-        height: 0;
-    }
-    </style>
     <script src="js/socket.io.min.js"></script>
     <script src="js/events.js"></script>
     <script src="js/remotecontrol.js.host.js"></script>
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script>
+    <script src="js/scenarios.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.8.21/jquery-ui.min.js"></script>
     <script>
-    $(document).ready(init);
+    
+    $(document).ready(function () {
+        init('Scenario4');
+    });
+    
+    function init (scenario) {
+        var rch;
+        var currentScenario = scenario;
 
-    function init (options) {
-        for (var i = 20; i--;) {
-            $('#stage').append('<div class="box">&nbsp;</div>');
+        function selectScenario (scenario) { 
+            $('#scenarios').removeClass('on');
+            (function (scenario) {
+                window.setTimeout(function () {
+                    $('#scenarios .stage').removeClass(currentScenario);
+                    $('#scenarios .stage').empty().addClass(scenario);
+                    $('#scenarios').addClass('on');
+                    var scenarioObj = new window[scenario](rch);
+                    scenarioObj.init($('#scenarios .stage'));
+                    var desc = window[scenario].description.replace(/\u000a\u000a/g, "<br><br>");
+                    $('#scenarioDescription').empty().append('<h1>' + window[scenario].title + '</h1>')
+                        .append('<p>' + desc + '</p>');
+                    currentScenario = scenario;
+                }, 1000);
+            })(scenario);
         }
 
-        var rch = new RemoteControlHost({ 
+        rch = new RemoteControlHost({ 
                 host: location.host, 
                 port: 1337,
                 capture: [
@@ -47,8 +52,11 @@
                     'touchend',
                     'mousedown',
                     'mousemove',
-                    'mouseup'
-                ]
+                    'mouseup',
+                    //'deviceorientation',
+                    //'devicemotion'
+                ],
+                pointerMode : true
             });
 
         document.querySelector('#getTokenButton').addEventListener('click', function () { 
@@ -59,81 +67,24 @@
             document.querySelector('#remotecontrol .tokenDisplay').innerHTML = data.tokenId;
         });
 
-        Cursor(rch);
-
-        function Cursor(rch) {
-            var mouseStartDelta, currentCursorTarget, cursorId = 'rcjscursor', cursor, cursorElmt;
-            cursorElmnt = $('<div class="rcjscursor" id="' + cursorId + '"></div>').appendTo(document.body);
-
-            function getCoordinates (event) {
-                switch (event.type) {
-                    case 'touchstart':
-                    case 'touchmove': 
-                        return {
-                            x: event.touches[0].clientX,
-                            y: event.touches[0].clientY 
-                        }
-                    case 'mousedown':
-                    case 'mousemove':
-                        return {
-                            x: event.clientX,
-                            y: event.clientY    
-                        }
-                    default: 
-                        return null;
-                }
+        var foundScenario, idx = 1, slctd;
+        do {
+            foundScenario = false
+            if (window['Scenario' + idx]) {
+                var scene = window['Scenario' + idx];
+                slctd = 'Scenario' + idx == currentScenario ? 'selected' : '';
+                $('#scenarioSelect').append('<option value="Scenario' + idx  + '" ' + slctd + '>' + scene.title + '</option>');
+                foundScenario = true;
             }
+            idx += 1;
+        } while(foundScenario);
 
-            function up (event) {
-                mouseStartDelta = null;
-                cursorElmnt.hide();
-            }
+        document.querySelector('#scenarioSelect').addEventListener('change', function (event) {
+            selectScenario(event.target.value);
+        });
 
-            function down (event) {
-                cursorElmnt.show();
-                var curpos = cursorElmnt.position(),
-                    coords = getCoordinates(event);
-                mouseStartDelta = { x: coords.x - curpos.left, y: coords.y - curpos.top };
-            }
-
-            function move (event) {
-                var x, y, target, coords = getCoordinates(event);
-                
-                if (mouseStartDelta) {
-                    cursorElmnt.css( { 
-                        left: coords.x - mouseStartDelta.x + 'px', 
-                        top: coords.y - mouseStartDelta.y + 'px' 
-                    } );
-
-                    // Hide the cursor before getting elementFromPoint, so we don't get the
-                    // cursor itself.
-                    cursorElmnt.toggle();
-                    if ( ( target = document.elementFromPoint(coords.x - mouseStartDelta.x, 
-                            coords.y - mouseStartDelta.y ) ) ) {
-                        cursorElmnt.toggle();   
-                        $(target).addClass('focused');
-                        if (currentCursorTarget && currentCursorTarget != target) {
-                            //window.setTimeout(function () {
-                                $(currentCursorTarget).removeClass('focused');
-                            //}, 300); 
-                            
-                        }
-                        currentCursorTarget = target;
-                    } else {
-                        cursorElmnt.toggle();   
-                    }
-                }
-            }
-
-            rch.addEventListener('mousedown', down);
-            rch.addEventListener('touchstart', down);
-            rch.addEventListener('mouseup', up);
-            rch.addEventListener('touchend', up);
-            rch.addEventListener('mousemove', move);
-            rch.addEventListener('touchmove', move);
-        }
+        selectScenario(currentScenario);
     }
-    
     </script>
 </head>
 <body>
@@ -141,16 +92,16 @@
         <label>remotecontrol.js</label>
         <p>Click the button to get a fresh token to enter on your mobile device</p>
         <button id="getTokenButton">
-            <img src="images/reload.png"/><span>Token</span></button>
+            <img src="images/reload.png" width="18"/><span>Token</span></button>
         <div class="tokenDisplay">&lt;token&gt;</div>
-        <p>Select demo scenario</p>
-        <select>    
-            <option>Selection</option>
-            <option>Drag Something</option>
-            <option>Contextmenu</option>
-            <option>Rotate Canvas</option>            
-        </select>
+        <p style="font-size:100%">Select demo scenario</p>
+        <select id="scenarioSelect"></select>
 	</div>
-    <div id="stage"></div>
+    <div id="sidebar">
+        <div id="scenarioDescription"></div>
+    </div>
+    <div id="scenarios">
+        <div class="stage"></div>
+    </div>
 </body>
 </html>

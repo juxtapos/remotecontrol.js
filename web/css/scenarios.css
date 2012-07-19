@@ -1,0 +1,73 @@
+/*
+* SCENARIO 1
+*/
+.Scenario1.stage {
+    background: -webkit-radial-gradient(1000px 80px, #505050 0%, #202020 100%);
+    padding: 25px;
+}
+
+.Scenario1 .box {
+    position: relative;
+    background-color: rgba(224,220,140, 1); 
+    width: 180px;
+    height: 100px;
+    margin: 20px;
+    float: left;
+    box-shadow: 2px 2px 10px 0px rgba(0, 0, 0, 0.5);
+    -webkit-transition-property: box-shadow, left, top;
+    -webkit-transition-duration: 1s;
+}
+
+.Scenario1 .box.focused {
+    box-shadow: 14px 12px 20px 0px rgba(0, 0, 0, 0.4);
+    left: -7px;
+    top: -5px;
+    border: 2px solid white;
+    margin: 18px;
+}
+
+/*
+* SCENARIO 2
+*/
+
+.Scenario2.stage {
+    background-color: #024d70;
+}
+
+.Scenario2 .box {
+    position: relative;
+    background-color: rgba(224,220,140, 1); 
+    width: 180px;
+    height: 100px;
+    margin: 20px;
+    float: left;
+    box-shadow: 2px 2px 10px 0px rgba(0, 0, 0, 0.5);
+    -webkit-transition-property: box-shadow, left, top;
+    -webkit-transition-duration: 1s;
+}
+
+/**
+ * SCENARIO 3
+ */
+.Scenario3.stage {
+    background-color: black;
+    background: url(../images/bg.png);  
+}
+
+.Scenario3 .photo {
+    position: absolute;
+    
+}
+
+.Scenario3 .photo img {
+    box-shadow: 2px 2px 0px 2px rgba(0,0,0,0.5);
+}
+
+.Scenario3 .photo.selected {
+    border: 2px solid white;
+}
+
+/*
+* SCENARIO 4
+*/
+.Scenario4 { }

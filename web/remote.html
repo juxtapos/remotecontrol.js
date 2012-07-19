@@ -2,8 +2,9 @@
 <html>
 <head>
     <meta http-equiv="content-type" content="text/html; charset=UTF-8">
-	<title>remotecontrol.js</title>
-    <link href='http://fonts.googleapis.com/css?family=Syncopate:400,700' rel='stylesheet' type='text/css'>
+	<title>remotecontrol.js: remotecontrol</title>
+    <!--<link href='http://fonts.googleapis.com/css?family=Syncopate:400,700' rel='stylesheet' type='text/css'>-->
+    <link href='http://fonts.googleapis.com/css?family=Droid+Sans' rel='stylesheet' type='text/css'>
     <link rel="stylesheet" href="css/index.css" type="text/css">
     <link rel="stylesheet" href="css/remote.css" type="text/css">
     <script src="js/socket.io.min.js"></script>
@@ -13,48 +14,61 @@
     <script>
     $(document).ready(init);
 
-    function init (options) {
+    function init () {
+        var remotecontrol = new RemoteControl({ 
+            host: location.host, 
+            port: 1337,
+            showTouches: true
+        });
 
-        $(document.body).get()[0].bounces = 'no';
-
-        var remotecontrol = new RemoteControl( { host: location.host, port: 1337 } );
         document.getElementById('tokenSend').addEventListener('click', function () {
             remotecontrol.supplyToken(document.getElementById('tokenField').value);
         });
 
         remotecontrol.addEventListener('rcjs:error', function (event) {
-            $('#remotecontrol .msg').empty().append(event.msg);
+            showMessage('Error: ' + event.msg);
         });
         remotecontrol.addEventListener('rcjs:connected', function (event) {
-            $('#remotecontrol .msg').empty().append('Connected');
+            showMessage('Connected');
         });
         remotecontrol.addEventListener('rcjs:startCapture', function (event) {
-            $('#remotecontrol .msg').empty().append('Capturing');
+            showMessage('Capturing');
         });
         remotecontrol.addEventListener('rcjs:receiverDisconnect', function (event) {
-            $('#remotecontrol .msg').empty().append('Disconnected');
+            showMessage('Disconnected');
         });
         remotecontrol.addEventListener('rcjs:serverDisconnect', function (event) {
-            $('#remotecontrol .msg').empty().append('Server disconnected');
+            showMessage('Server disconnected');
+        });
+
+        function showMessage (msg) {
+            $('#remotecontrol .msg').empty().append(msg);
+        }
+
+        // Prevent Safari iOS bounce effect.
+        document.addEventListener('touchmove', function (event) {
+            event.preventDefault();
         });
     }
 
-    function log(msg) {
-        var l = $('#logger');
-        l.append('<div>' + msg + '</div>');
-        l.get()[0].scrollTop = l.get()[0].scrollHeight;
-    }
+    // function log(msg) {
+    //     return;
+    //     var l = $('#logger');
+    //     l.append('<div>' + msg + '</div>');
+    //     l.get()[0].scrollTop = l.get()[0].scrollHeight;
+    // }
     
     </script>
 </head>
 <body>
 	<div class="remotecontrol" id="remotecontrol">
         <label>remotecontrol.js</label>
+        <p>Enter the token displayed in the host application.</p>
         <input type="text" id="tokenField" value="1">
         <button id="tokenSend"><span>Register</span></button>
         <div class="msg"></div>
 	</div>
-    <div id="logger" style="position:absolute;width:400px;background-color:rgba(100,100,100,1);height:580px;right:10px;overflow-x:hidden;overflow-y:scroll;-webkit-overflow-scrolling: touch;">
+    <!--<div id="logger" style="position:absolute;width:400px;background-color:rgba(100,100,100,1);height:580px;right:10px;overflow-x:hidden;overflow-y:scroll;-webkit-overflow-scrolling: touch;">-->
     </div>
 </body>
 </html>

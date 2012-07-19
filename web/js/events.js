@@ -7,7 +7,7 @@ var EventHandler = {
 	 * @param handler {Function} Event handler function.
 	 */
 	addEventListener: function addEventListener (type, handler) {
-		if (!type.indexOf('rcjs:') || ~this.captureEvents.indexOf(type)) {
+		if (!type.indexOf('rcjs:') || ~this.captureEvents.indexOf(type) || !type.indexOf('rcjs')) {
 			if (!(type in this.events)) {
 				this.events[type] = [];
 			}
