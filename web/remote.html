@@ -19,7 +19,8 @@
         var remotecontrol = new RemoteControl({ 
             host: location.host, 
             port: 1337,
-            showTouches: true
+            showTouches: true,
+            deviceEventInterval: 200
         });
 
         document.getElementById('tokenSend').addEventListener('click', function () {
@@ -53,12 +54,12 @@
         });
     }
 
-    // function log(msg) {
-    //     return;
-    //     var l = $('#logger');
-    //     l.append('<div>' + msg + '</div>');
-    //     l.get()[0].scrollTop = l.get()[0].scrollHeight;
-    // }
+    function log (msg) {
+        var l = $('#logger');
+        l.append('<div>' + msg + '</div>');
+        var e = l.get()[0];
+        e.scrollTop = e.scrollHeight;
+    }
     
     </script>
 </head>
@@ -70,7 +71,6 @@
         <button id="tokenSend"><span>Register</span></button>
         <div class="msg"></div>
 	</div>
-    <!--<div id="logger" style="position:absolute;width:400px;background-color:rgba(100,100,100,1);height:580px;right:10px;overflow-x:hidden;overflow-y:scroll;-webkit-overflow-scrolling: touch;">-->
-    </div>
+    <div id="logger"></div>
 </body>
 </html>

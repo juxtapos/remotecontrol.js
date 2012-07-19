@@ -56,8 +56,8 @@
                     'mousedown',
                     'mousemove',
                     'mouseup',
-                    //'deviceorientation',
-                    //'devicemotion'
+                    'deviceorientation',
+                    'devicemotion'
                 ],
                 pointerMode : true
             });
@@ -87,6 +87,7 @@
         });
 
         selectScenario(currentScenario);
+        rch.requestToken();
     }
     </script>
 </head>

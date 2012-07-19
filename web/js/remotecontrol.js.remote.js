@@ -8,6 +8,7 @@ function RemoteControl (options) {
 	this.captureEvents = []; // supplied by receiver
 	this.events = {};	// required for the EventHandler 'mixin'
 	this.showTouches = options.showTouches || false;
+	this.deviceEventInterval = options.deviceEventInterval || 200;
 	this.token = null;
 
 	socket.on('connect', function () {
@@ -71,17 +72,30 @@ function RemoteControl (options) {
 		}
 	})(this.showTouches);
 
-	function genericEventHandler(event) {
-		var eventobj = copyEvent(event);	
+	var lastMotionEvent = 0;
+
+	function genericEventHandler (event) {
+		var eventobj = copyEvent(event),
+			fireEvent = true,
+			ts = new Date().getTime();
 		if (self.showTouches) {
 			showTouches(event);	
 		}
-		socket.emit('rcjs:event', { 
-			type: event.type, 
-			event: eventobj, 
-			key: self.key, 
-			tokenId: self.tokenId 
-		});
+		if (event.type === 'devicemotion' || event.type === 'deviceorientation') {
+			if (ts - lastMotionEvent > self.deviceEventInterval) {
+				lastMotionEvent = ts;
+			} else {
+				fireEvent = false;
+			}
+		}
+		if (fireEvent) {
+			socket.emit('rcjs:event', { 
+				type: event.type, 
+				event: eventobj, 
+				key: self.key, 
+				tokenId: self.tokenId 
+			});
+		}
 		event.preventDefault();
 	}
 

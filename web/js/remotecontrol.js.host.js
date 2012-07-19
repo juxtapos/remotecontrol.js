@@ -73,7 +73,9 @@ function RemoteControlHost (options) {
 							identifier: touch.identifier,
 							downTime: new Date().getTime(),
 							clientX: touch.clientX,
-							clientY: touch.clientY
+							clientY: touch.clientY,
+							lastClientX: touch.clientX,
+							lastClientY: touch.clientY
 						} );
 					});
 					setTimeout(function ( ) {
@@ -106,44 +108,45 @@ function RemoteControlHost (options) {
 						}
 						break; 
 					} else {
+						Array.prototype.forEach.call(event.changedTouches, function (event) {
+							var touch = touches[touchIds[event.identifier]]
+							touch.lastClientX = event.clientX;
+							touch.lastClientY = event.clientY;
+						});
 
-					}
+						// var deltaAB = 0, deltaBC = 0, currentDeltaAB = 0, currentDeltaBC = 0, t = touches;
+						// if (t[0] && t[1]) {
+						// 	deltaAB = dist(t[0].clientX, t[0].clientY, t[1].clientX, t[1].clientY);
+						// 	currentDeltaAB = dist(t[0].lastClientX, t[0].lastClientY, t[1].lastClientX, t[1].lastClientY);
+						// }
 
-					Array.prototype.forEach.call(event.changedTouches, function (event) {
-						var touch = touches[touchIds[event.identifier]]
-						touch.lastClientX = event.clientX;
-						touch.lastClientY = event.clientY;
-					});
+						// if (t[1] && t[2]) {
+						// 	deltaBC = dist(t[1].clientX, t[1].clientY, t[2].clientX, t[2].clientY);
+						// 	currentDeltaBC = dist(t[1].lastClientX, t[1].lastClientY, t[2].lastClientX, t[2].lastClientY);
+						// 	console.log(deltaAB);
+						// }
 
-					var deltaAB = 0, deltaBC = 0, currentDeltaAB = 0, currentDeltaBC = 0, t = touches;
-					if (t[0] && t[1]) {
-						deltaAB = dist(t[0].clientX, t[0].clientY, t[1].clientX, t[1].clientY);
-						currentDeltaAB = dist(t[0].lastClientX, t[0].lastClientY, t[1].lastClientX, t[1].lastClientY);
-					}
-
-					// if (t[1] && t[2]) {
-					// 	deltaBC = dist(t[1].clientX, t[1].clientY, t[2].clientX, t[2].clientY);
-					// 	currentDeltaBC = dist(t[1].lastClientX, t[1].lastClientY, t[2].lastClientX, t[2].lastClientY);
-					// 	console.log(deltaAB);
-					// }
-
-					if (Math.abs(deltaAB - currentDeltaAB) < 50 && Math.abs(deltaBC - currentDeltaBC) < 50) {
-						var atan2 = Math.atan2((t[0].clientY - t[0].lastClientY),(t[0].clientX - t[0].lastClientX)),
-							deg = atan2 * 180 / Math.PI;
-						currentGesture = 'rcjs:swipe';
-						rcjsEvent = lastEvent = {
-							type: 'rcjs:swipe', 
-							event: {
-								angle: deg
-							}
-						}
-						that.gesture = 'rcjs:swipe';
-						//console.log('swipe');
-					} else {
-						var atan2 = Math.atan2((t[0].clientY - t[0].lastClientY),(t[0].clientX - t[0].lastClientX)),
+						// if (Math.abs(deltaAB - currentDeltaAB) < 50 && Math.abs(deltaBC - currentDeltaBC) < 50) {
+						// 	var atan2 = Math.atan2((t[0].clientY - t[0].lastClientY),(t[0].clientX - t[0].lastClientX)),
+						// 		deg = atan2 * 180 / Math.PI;
+						// 	currentGesture = 'rcjs:swipe';
+						// 	rcjsEvent = lastEvent = {
+						// 		type: 'rcjs:swipe', 
+						// 		event: {
+						// 			angle: deg
+						// 		}
+						// 	}
+						// 	that.gesture = 'rcjs:swipe';
+						// 	//console.log('swipe');
+						// } else {
+						var t = touches,
+							atan2 = Math.atan2((t[0].lastClientY - t[1].lastClientY),(t[0].lastClientX - t[1].lastClientX)),
 						 	deg = atan2 * 180 / Math.PI,
-						 	scale = 0;
+						 	startDist = dist(t[0].clientX, t[0].clientY, t[1].clientX, t[1].clientY),
+						 	currentDist = dist(t[0].lastClientX, t[0].lastClientY, t[1].lastClientX, t[1].lastClientY),
+						 	scale = currentDist / startDist ;
 						currentGesture = 'rcjs:pinch';
+
 						rcjsEvent = lastEvent = {
 							type: 'rcjs:pinch', 
 							event: {
@@ -152,9 +155,12 @@ function RemoteControlHost (options) {
 							} 
 						}	
 						that.gesture = 'rcjs:pinch';
-						//console.log('pinch')
+						//console.log('deg: ' + deg + ', scale: ' + scale);
+						// }
+						break;
 					}
-					break;
+
+					
 			}
 			if (!hasTouches) {
 				if (lastEvent) {

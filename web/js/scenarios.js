@@ -50,11 +50,6 @@ function Scenario1 (rch) {
         rch.addEventListener('rcjs:singletouchstart', down);
         rch.addEventListener('rcjs:singletouchmove', move);
         rch.addEventListener('rcjs:singletouchend', up);
-        
-    }
-
-    function run () {
-
     }
 
     function destroy () {
@@ -63,18 +58,13 @@ function Scenario1 (rch) {
 
     return {
         init: init,
-        run: run,
         destroy: destroy
     }
 }
 Scenario1.title = 'Touch Selection';
 Scenario1.description = 'A single-finger touch move on the remote device is used to create a \
-pointer function on the host application.\n\nSingle-finger touches are easily captured by listening \
-for rcjs:singletouchstart, rcjs:singletouchmove and rcjs:singletouchend events.';
-
-
-
-
+    pointer function on the host application.\n\nSingle-finger touches are easily captured by \
+    listening for rcjs:singletouchstart, rcjs:singletouchmove and rcjs:singletouchend events.';
 
 function Scenario2 (rch) {
 
@@ -89,13 +79,13 @@ function Scenario2 (rch) {
         for (var i = 180; i > -180; i--) {
             var rad = i * (Math.PI / 180);
             ctx.beginPath();
-            ctx.strokeStyle = 'hsla('+i+', 100%, 50%, 0.1)';
-            ctx.lineWidth = 20;
-            ctx.moveTo(200 + Math.sin(rad) * 120 , 200 + Math.cos(rad) * 100);
-            ctx.lineTo(200, 200);
+            ctx.strokeStyle = 'hsla('+i+', 100%, 50%, 0.9)';
+            ctx.lineWidth = 3;
+            ctx.moveTo(200 + Math.sin(rad) * 120 , 200 + Math.cos(rad) * 120);
+            ctx.lineTo(200 + Math.sin(rad) * 40 , 200 + Math.cos(rad) * 40);
             ctx.stroke();
             ctx.closePath();
-            ctx.clearRect(130, 160, 140, 80);
+            //ctx.clearRect(130, 160, 140, 80);
 
         }    
 
@@ -124,23 +114,17 @@ function Scenario2 (rch) {
         });
     }
 
-    function run () {
-
-    }
-
     function destroy () {
 
     }
 
     return {
         init: init,
-        run: run,
         destroy: destroy 
     }
 }
 Scenario2.title = 'Mouse Clicks & Context Swipes';
 Scenario2.description = 'combined mouse click and touch select';
-
 
 function Scenario3 (rch) {
 
@@ -174,54 +158,56 @@ function Scenario3 (rch) {
 
         rch.addEventListener('rcjs:pinch', function (event) {
             //var dir = rch.getDirection(event.angle);
-            var rotation = event.rotation;
-            var deg = rotation < 0 ? 180 + (rotation * -1) : rotation;
-            console.log('pinch ' + deg);
-            $(selectedPhoto).css('-webkit-transform', 'rotate(' + deg + 'deg)');
+            var rotation = event.rotation,
+                scale = event.scale,
+                deg = rotation// < 0 ? 180 + (rotation * -1) : rotation;
+            $(selectedPhoto).css('-webkit-transform', 'rotate(' + deg + 'deg) scale(' + scale + ')');
             $(selectedPhoto).css('-moz-transform', 'rotate(' + deg + 'deg)');
         });
 
     }
 
-
-    function run () {
-
-    }
-
     function destroy () {
 
     }
 
     return {
         init: init,
-        run: run,
         destroy: destroy
     }
 }
 Scenario3.title = 'Photos';
 Scenario3.description = 'Photos can be dragged with the mouse, selected with a click and then\
-rotated and scaled with a rotate and pinch gestures on the remote device.\n\nRotate and pinch\
-events are distinguished and have three types each, e.g. rcjs:rotationstart, rcjs:pinchmove.';
+    rotated and scaled with a rotate and pinch gestures on the remote device.\n\nRotate and pinch\
+    events are distinguished and have three types each, e.g. rcjs:rotationstart, rcjs:pinchmove.';
 
 function Scenario4 (rch) {
 
+    var selected = 10;
+
     function init (container) {
 
-        rch.addEventListener('rcjs:pinch', function (event) {
-            console.log('pinching ' + event.rotation);
-        });
         // rch.addEventListener('deviceorientation', function (event) {
         //     console.log(event)
         // });
 
-        // rch.addEventListener('devicemotion', function (event) {
-        //     if (event.acceleration.x > 0.1)
-        //     console.log(event.acceleration.x);
-        // });
-    }
+        for (var i = 20; i--;) {
+            $(container).append('<div id="C' + i + '"">div</div>');
+        }
 
-    function run () {
+        rch.addEventListener('devicemotion', function (event) {
+            // if (event.acceleration.x > 1) {
 
+
+
+                console.log(event.acceleration.x + ',' + event.acceleration.y + ',' + event.acceleration.z);   
+                $('#C' + selected).removeClass('high');
+                selected += 1;
+                $('#C' + selected).addClass('high');
+            // }
+        });
+
+        $('#C' + selected).addClass('high');
     }
 
     function destroy () {
@@ -230,7 +216,6 @@ function Scenario4 (rch) {
 
     return {
         init: init,
-        run: run,
         destroy: destroy
     }
 }

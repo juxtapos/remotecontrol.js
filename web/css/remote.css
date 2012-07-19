@@ -28,8 +28,21 @@ html, body {
 }
 
 #remotecontrol {
-    left: 50%;
-    margin-left: -125px;
-    margin-top: 100px;
+    left: 20%;
+    top: 20%;
     border: 10px solid gray;
+}
+
+#logger {
+    position: absolute;
+    width: 400px;
+    height: 580px;
+    top: 20px;
+    right: 10px;
+    overflow-x: hidden;
+    overflow-y: scroll;
+    -webkit-overflow-scrolling: touch; 
+    font-size: 10px; 
+    line-height: 1.5em;
+    color: black;
 }

@@ -70,4 +70,11 @@
 /*
 * SCENARIO 4
 */
-.Scenario4 { }
+.Scenario4.stage div { 
+    margin: 10px;
+    border: 1px solid black;
+}
+
+.Scenario4.stage div.high {
+    background-color: orange;
+} 
