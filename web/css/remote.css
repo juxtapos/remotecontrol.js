@@ -1,6 +1,7 @@
 body {
 	background: none;
 	background-color: rgba(80, 80, 80, 1);
+    font-family: Droid Sans;
 }
 
 /*
@@ -14,9 +15,22 @@ html, body {
 .touch {
     position: absolute;
     border: 1px solid white; 
-    border-radius: 20px;
+    border-radius: 40px;
     box-shadow: 0 0 10px 2px rgba(255, 255, 255, 0.5);
-    width: 40px;
-    height: 40px;
-    display: none;
+    width: 80px;
+    height: 80px;
+    opacity: 0;
+    -webkit-transition: opacity 200ms linear;
+}
+
+.touch.on {
+    opacity: 1;
+}
+
+#remotecontrol {
+    xposition: relative;
+    left: 50%;
+    margin-left: -125px;
+    margin-top: 100px;
+    border: 10px solid gray;
 }

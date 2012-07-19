@@ -1,7 +1,4 @@
 .remotecontrol {
-    top: 30px;
-    left: 20px;
-    position: absolute;
     width: 250px;
     border-radius: 20px;
     background: -webkit-linear-gradient(
@@ -10,7 +7,6 @@
         rgba(210, 210, 210, 0.1) 100%);
     background-color: gray;
     box-shadow: 4px 4px 4px 0px rgba(0, 0, 0, 0.5);
-    Xfont-family: Verdana, Arial, sans-serif;
     padding-bottom: 16px;
 }
 
@@ -22,13 +18,11 @@
 
 .remotecontrol label {
     display: block;
-    width: 100%;
     text-align: center;
     color: #000;
-    margin: 18px 0 0 0;
     letter-spacing: 3px;
     font-size: 14px;
-    Xfont-family: 'Syncopate', sans-serif;
+    padding-top: 10px;
 }
 
 .remotecontrol button {
@@ -94,6 +88,23 @@
     text-align: center;
     margin: 10px;
 }
+
+.remotecontrol .msg.pulse {
+    -webkit-animation: pulsate 1.5s ease-in;
+    -webkit-animation-iteration-count: infinite; 
+    font-weight: bold;
+}
+
+@-webkit-keyframes pulsate {
+    0% { 
+        opacity: 0; 
+        color: white;
+    }
+    100% { 
+        opacity: 1; 
+        color:red;
+    }
+}​
 
 .rcjscursor {
     width: 20px;

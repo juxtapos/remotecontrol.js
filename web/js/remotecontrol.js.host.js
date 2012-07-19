@@ -105,6 +105,8 @@ function RemoteControlHost (options) {
 							});
 						}
 						break; 
+					} else {
+
 					}
 
 					Array.prototype.forEach.call(event.changedTouches, function (event) {

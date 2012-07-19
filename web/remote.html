@@ -5,7 +5,7 @@
 	<title>remotecontrol.js: remotecontrol</title>
     <!--<link href='http://fonts.googleapis.com/css?family=Syncopate:400,700' rel='stylesheet' type='text/css'>-->
     <link href='http://fonts.googleapis.com/css?family=Droid+Sans' rel='stylesheet' type='text/css'>
-    <link rel="stylesheet" href="css/index.css" type="text/css">
+    <link rel="stylesheet" href="css/remotecontrol-ui.css" type="text/css">
     <link rel="stylesheet" href="css/remote.css" type="text/css">
     <script src="js/socket.io.min.js"></script>
     <script src="js/events.js"></script>
@@ -33,6 +33,7 @@
         });
         remotecontrol.addEventListener('rcjs:startCapture', function (event) {
             showMessage('Capturing');
+            $('#remotecontrol .msg').addClass('pulse');
         });
         remotecontrol.addEventListener('rcjs:receiverDisconnect', function (event) {
             showMessage('Disconnected');
@@ -61,7 +62,7 @@
     </script>
 </head>
 <body>
-	<div class="remotecontrol" id="remotecontrol">
+	<div class="remotecontrol" id="remotecontrol" style="xmargin-left: auto;position: absolute">
         <label>remotecontrol.js</label>
         <p>Enter the token displayed in the host application.</p>
         <input type="text" id="tokenField" value="1">
