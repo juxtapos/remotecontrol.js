@@ -18,15 +18,33 @@ body {
 }
 
 #scenarioDescription {
-    padding: 260px 20px 0px;
+    padding: 20px 20px;
     color: white;   
 }
 
 #scenarioDescription h1 {
     font-size: 20px;
 }
+
 #scenarioDescription p {
     font-size: 80%;
+}
+
+#scenarioSelectBox {
+    padding: 200px 20px 20px 20px;
+    color: white;
+}
+
+#scenarioSelectBox p {
+    margin: 0px; 
+    color: white;
+}
+
+
+#scenarioSelectBox select {
+    display: block;
+    width: 80%;
+    font-family: Droid Sans;
 }
 
 #scenarios {

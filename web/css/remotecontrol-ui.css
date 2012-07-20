@@ -62,13 +62,6 @@
     color: orange;
 }
 
-.remotecontrol select {
-    display: block;
-    width: 80%;
-    margin: auto;
-    font-family: Droid Sans;
-}
-
 .remotecontrol input {
     text-align: center;
     margin: 10px auto;

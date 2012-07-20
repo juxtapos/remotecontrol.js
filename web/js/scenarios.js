@@ -3,7 +3,6 @@ function ScenarioBase (rch) {
     this.rch = rch;
 }
 ScenarioBase.prototype.addEventListener = function (type, listener) {
-    console.log(type);
     this.rch.addEventListener.apply(this, arguments);
     this.listeners.push( { type: type, listener: listener } );
 }

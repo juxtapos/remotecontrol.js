@@ -33,18 +33,13 @@
                     $('#scenarios .stage').removeClass(scenario);
                     $('#scenarios .stage').empty().addClass(scenario);
                     $('#scenarios').addClass('on');
-                    console.log(scenario)
                     var scenarioObj = new window[scenario](rch);
                     scenarioObj.init($('#scenarios .stage'));
 
                     var desc = window[scenario].description.replace(/\u000a\u000a/g, "<br><br>");
                     $('#scenarioDescription').empty().append('<h1>' + window[scenario].title + '</h1>')
                         .append('<p>' + desc + '</p>');
-                    console.log('yoko ' + (currentScenario) );
-                    if (currentScenario) {
-                        console.log('yo');
-                        console.log(currentScenario);
-                        debugger;
+                    if (currentScenario instanceof ScenarioBase) {
                         currentScenario.destroy();
                     }
                     currentScenarioName = scenario;
@@ -109,17 +104,19 @@
 	<div class="remotecontrol" id="remotecontrol">
         <label>remotecontrol.js</label>
         <p>Click the button to get a fresh token to enter on your mobile device</p>
-        <button id="getTokenButton">
-            <img src="images/reload.png" width="18"/><span>Token</span></button>
-        <!--<div class="tokenDisplay">&lt;token&gt;</div>-->
-        <p style="font-size:100%">Select demo scenario</p>
-        <select id="scenarioSelect"></select>
+        <button id="getTokenButton"><img src="images/reload.png" width="18"/><span>Token</span></button>
 	</div>
     <div id="sidebar">
+        <div id="scenarioSelectBox">
+            <p style="font-size:100%">Select demo scenario:</p>
+            <select id="scenarioSelect"></select>    
+        </div>
         <div id="scenarioDescription"></div>
     </div>
     <div id="scenarios">
         <div class="stage"></div>
     </div>
+
+    <a href="https://github.com/juxtapos/remotecontrol.js"><img style="position: absolute; top: 0; right: 0; border: 0;" src="https://s3.amazonaws.com/github/ribbons/forkme_right_orange_ff7600.png" alt="Fork me on GitHub"></a>
 </body>
 </html>
