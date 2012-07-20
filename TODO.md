@@ -7,3 +7,4 @@
    * Implement Scenario4.
    * DONE: Implement color wheel selection in Scenario2. 
    * Remote threshold should come from host configuration. 
+   * Make custom events configurable (like standard DOM events).
