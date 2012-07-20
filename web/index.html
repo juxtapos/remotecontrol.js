@@ -24,21 +24,31 @@
     
     function init (scenario) {
         var rch;
-        var currentScenario = scenario;
+        var currentScenarioName = scenario, currentScenario;
 
         function selectScenario (scenario) { 
             $('#scenarios').removeClass('on');
             (function (scenario) {
                 window.setTimeout(function () {
-                    $('#scenarios .stage').removeClass(currentScenario);
+                    $('#scenarios .stage').removeClass(scenario);
                     $('#scenarios .stage').empty().addClass(scenario);
                     $('#scenarios').addClass('on');
+                    console.log(scenario)
                     var scenarioObj = new window[scenario](rch);
                     scenarioObj.init($('#scenarios .stage'));
+
                     var desc = window[scenario].description.replace(/\u000a\u000a/g, "<br><br>");
                     $('#scenarioDescription').empty().append('<h1>' + window[scenario].title + '</h1>')
                         .append('<p>' + desc + '</p>');
-                    currentScenario = scenario;
+                    console.log('yoko ' + (currentScenario) );
+                    if (currentScenario) {
+                        console.log('yo');
+                        console.log(currentScenario);
+                        debugger;
+                        currentScenario.destroy();
+                    }
+                    currentScenarioName = scenario;
+                    currentScenario = scenarioObj;
                 }, 1000);
             })(scenario);
         }
@@ -90,7 +100,7 @@
             selectScenario(event.target.value);
         });
 
-        selectScenario(currentScenario);
+        selectScenario(currentScenarioName);
         rch.requestToken();
     }
     </script>

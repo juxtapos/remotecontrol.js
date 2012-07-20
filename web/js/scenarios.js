@@ -1,8 +1,30 @@
-function Scenario1 (rch) {
-    var self = this;
-    this.container = null;
+function ScenarioBase (rch) {
+    this.listeners = [];
+    this.rch = rch;
+}
+ScenarioBase.prototype.addEventListener = function (type, listener) {
+    console.log(type);
+    this.rch.addEventListener.apply(this, arguments);
+    this.listeners.push( { type: type, listener: listener } );
+}
 
-    function init (container) {
+ScenarioBase.prototype.destroy = function () {
+    var self = this;
+    this.listeners.forEach(function (lstnr) {
+        self.rch.removeEventListener.call(self, lstnr.type, lstnr.listener);
+    });
+}
+
+
+
+
+
+function Scenario1 (rch) {
+    ScenarioBase.apply(this, arguments);
+    this.container = null;
+    var self = this;
+
+    this.init = function (container) {
         for (var i = 20; i--;) {
             var l = 50,
                 s = Math.round(Math.random() * 50) + 50;
@@ -53,28 +75,21 @@ function Scenario1 (rch) {
                 }
             }
         }
-
+        self.addEventListener('rcjs:touchmove', function ( ) {});
         rch.addEventListener('rcjs:singletouchstart', down);
         rch.addEventListener('rcjs:singletouchmove', move);
         rch.addEventListener('rcjs:singletouchend', up);
     }
-
-    function destroy () {
-
-    }
-
-    return {
-        init: init,
-        destroy: destroy
-    }
 }
+Scenario1.prototype = new ScenarioBase();
 Scenario1.title = 'Touch Selection';
 Scenario1.description = 'A single-finger touch move on the remote device is used to create a \
     pointer function on the host application.';
 
 function Scenario2 (rch) {
+    ScenarioBase.apply(this, arguments);
 
-    function init (container) {
+    this.init = function (container) {
         var target; 
 
         for (var i = 0; ++i < 11;) {
@@ -113,11 +128,11 @@ function Scenario2 (rch) {
             $(target).removeClass('selected');    
         });
 
-        rch.addEventListener('rcjs:pinch', function (event) {
+        this.addEventListener('rcjs:pinch', function (event) {
             $(target).css('background-color' , 'hsl(' + event.rotation + ', 100%, 50%)');
         });
 
-        rch.addEventListener('rcjs:swipeend', function (event) {
+        this.addEventListener('rcjs:swipeend', function (event) {
             if (target) {
                 var dir = rch.getDirection(event.angle);
                 switch (dir) {
@@ -140,23 +155,15 @@ function Scenario2 (rch) {
             }
         });
     }
-
-    function destroy () {
-
-    }
-
-    return {
-        init: init,
-        destroy: destroy 
-    }
 }
+Scenario2.prototype = new ScenarioBase();
 Scenario2.title = 'Context Swipes';
 Scenario2.description = 'Combined mouse click selection and swipes: select a box with your mouse \
 then copy it with a "south-swipe, delete it with a "north-swipe", and double/reset the width with \
 "east-/west-swipes". The color can be changed by using a 2-finger rotation gesture.';
 
 function Scenario3 (rch) {
-
+    ScenarioBase.apply(this, arguments);
     var selectedPhoto;
 
     function init (container) {
@@ -195,7 +202,7 @@ function Scenario3 (rch) {
             });
         });
 
-        rch.addEventListener('rcjs:pinchend', function (event) {
+        this.addEventListener('rcjs:pinchend', function (event) {
             $(selectedPhoto).data({
                 scale: $(selectedPhoto).data('currentScale'), 
                 currentScale: null, 
@@ -204,7 +211,7 @@ function Scenario3 (rch) {
             });
         });
 
-        rch.addEventListener('rcjs:pinch', function (event) {
+        this.addEventListener('rcjs:pinch', function (event) {
             var scale = $(selectedPhoto).data('scale') * event.scale,
                 deg = event.rotation + $(selectedPhoto).data('rotation');
             $(selectedPhoto).data({
@@ -214,34 +221,25 @@ function Scenario3 (rch) {
             .css('-webkit-transform', 'rotate(' + deg + 'deg) scale(' + scale + ')')
             .css('-moz-transform', 'rotate(' + deg + 'deg) scale(' + scale + ')');
         });
-
-    }
-
-    function destroy () {
-
-    }
-
-    return {
-        init: init,
-        destroy: destroy
     }
 }
+Scenario3.prototype = new ScenarioBase();
 Scenario3.title = 'Photos';
 Scenario3.description = 'Photos can be dragged with the mouse, selected with a click and then\
     rotated and scaled with a rotate and pinch gestures on the remote device.\n\n\
     The photos come from live a Google search. ';
 
 function Scenario4 (rch) {
-
+    ScenarioBase.apply(this, arguments);
     var selected = 10;
 
-    function init (container) {
+    this.init = function (container) {
         container.append('Todo');
-        // rch.addEventListener('deviceorientation', function (event) {
+        // this.addEventListener('deviceorientation', function (event) {
         //     console.log(event.alpha + ', ' + event.beta + ', ' + event.gamma);
         // });
 
-        // rch.addEventListener('devicemotion', function (event) {
+        // this.addEventListener('devicemotion', function (event) {
         //     var threshold = 0.5;
 
         //     var left = event.acceleration.x < -threshold;
@@ -267,25 +265,16 @@ function Scenario4 (rch) {
 
         // $('#C' + selected).addClass('high');
     }
-
-    function destroy () {
-
-    }
-
-    return {
-        init: init,
-        destroy: destroy
-    }
 }
+Scenario4.prototype = new ScenarioBase();
 Scenario4.title = 'Rotate Things';
 Scenario4.description = 'Control with device orientation';
 
 function Scenario5 (rch) {
-
+    ScenarioBase.apply(this, arguments);
     var selected = 10;
 
-    function init (container) {
-
+    this.init = function (container) {
         $(container).append('<table>\
             <tr>\
                 <th>Gesture</th>\
@@ -301,27 +290,27 @@ function Scenario5 (rch) {
             </tr>\
             </table>');
 
-        rch.addEventListener('rcjs:pinchstart', function (event) {
+        this.addEventListener('rcjs:pinchstart', function (event) {
             print('pinch', 'rcjs:pinchstart', event);
         });
 
-        rch.addEventListener('rcjs:pinch', function (event) {
+        this.addEventListener('rcjs:pinch', function (event) {
             print('pinch', 'rcjs:pinch', event);
         });
 
-        rch.addEventListener('rcjs:pinchend', function (event) {
+        this.addEventListener('rcjs:pinchend', function (event) {
             print('', 'rcjs:pinchend', event);
         });
 
-        rch.addEventListener('rcjs:swipestart', function (event) {
+        this.addEventListener('rcjs:swipestart', function (event) {
             print('swipe', 'rcjs:swipestart', event);
         });
 
-        rch.addEventListener('rcjs:swipe', function (event) {
+        this.addEventListener('rcjs:swipe', function (event) {
             print('swipe', 'rcjs:swipe', event);
         });
 
-        rch.addEventListener('rcjs:swipeend', function (event) {
+        this.addEventListener('rcjs:swipeend', function (event) {
             print('', 'rcjs:swipeend', event);
         });
 
@@ -331,16 +320,8 @@ function Scenario5 (rch) {
             $('#Values').empty().append(JSON.stringify(obj, null, '\t'));
         }
     }
-
-    function destroy () {
-
-    }
-
-    return {
-        init: init,
-        destroy: destroy
-    }
 }
+Scenario5.prototype = new ScenarioBase();
 Scenario5.title = 'Low-level';
 Scenario5.description = 'Testing tap, touchmove, swipe, pinch & rotate gestures.\n\n\
     Currently implemented are touchmove, swipe, pinch & rotate. Taps are coming.';
