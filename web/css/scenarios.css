@@ -22,8 +22,7 @@
     box-shadow: 14px 12px 20px 0px rgba(0, 0, 0, 0.4);
     left: -7px;
     top: -5px;
-    border: 2px solid white;
-    margin: 18px;
+    outline: 2px solid white;
 }
 
 /*

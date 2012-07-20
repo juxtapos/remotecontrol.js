@@ -21,9 +21,14 @@ function Scenario1 (rch) {
             cursorElmnt.removeClass('off');
             var curpos = cursorElmnt.position();
             mouseStartDelta = { x: event.clientX - curpos.left, y: event.clientY - curpos.top };
+            cursorElmnt.css( { 
+                    left: event.clientX - mouseStartDelta.x + 'px', 
+                    top: event.clientY - mouseStartDelta.y + 'px' 
+                } );
         }
 
         function move (event) {
+            //console.log('move')
             var x, y, target;
             if (mouseStartDelta) {
                 cursorElmnt.css( { 
@@ -147,7 +152,7 @@ function Scenario2 (rch) {
 Scenario2.title = 'Context Swipes';
 Scenario2.description = 'Combined mouse click selection and swipes: select a box with your mouse \
 then copy it with a "south-swipe, delete it with a "north-swipe", and double/reset the width with \
-"east-/west-swipes".';
+"east-/west-swipes". The color can be changed by using a 2-finger rotation gesture.';
 
 function Scenario3 (rch) {
 
@@ -161,12 +166,13 @@ function Scenario3 (rch) {
                 var photo = $('<div class="photo" id="photo' 
                     + index + '"><img src="' + result.url+ '"></div>').appendTo(stage);
                 $(photo).find('img').on('load', function () {
-                    var rotation = (Math.random() * 90 - 45);
+                    var rotation = (Math.random() * 90 - 45),
+                        scale = Math.random() / 2 + 0.5;
                     photo.data({
                         rotation: rotation,
-                        scale: 1
+                        scale: scale
                     })
-                    .css('-webkit-transform', 'rotate(' + rotation + 'deg)')
+                    .css('-webkit-transform', 'rotate(' + rotation + 'deg) scale(' + scale + ')')
                     .css('-moz-transform', ' rotate(' + rotation + 'deg)')
                     .css({
                         top: Math.max(Math.random() * stage.height() - photo.height(), 0) + "px",
@@ -221,7 +227,8 @@ function Scenario3 (rch) {
 }
 Scenario3.title = 'Photos';
 Scenario3.description = 'Photos can be dragged with the mouse, selected with a click and then\
-    rotated and scaled with a rotate and pinch gestures on the remote device.';
+    rotated and scaled with a rotate and pinch gestures on the remote device.\n\n\
+    The photos come from live a Google search. ';
 
 function Scenario4 (rch) {
 

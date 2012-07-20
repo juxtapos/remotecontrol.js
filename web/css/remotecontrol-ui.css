@@ -95,17 +95,6 @@
     font-weight: bold;
 }
 
-@keyframes pulsate {
-    0% { 
-        opacity: 0; 
-        color: white;
-    }
-    100% { 
-        opacity: 1; 
-        color:red;
-    }
-}​
-
 .rcjscursor {
     width: 20px;
     height: 20px;
@@ -126,3 +115,14 @@
     opacity: 0;
     display: none;
 }
+
+@keyframes pulsate {
+    0% { 
+        opacity: 0; 
+        color: white;
+    }
+    100% { 
+        opacity: 1; 
+        color:red;
+    }
+}​
