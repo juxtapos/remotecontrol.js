@@ -18,7 +18,7 @@ body {
 }
 
 #scenarioDescription {
-    padding: 300px 20px 0px;
+    padding: 260px 20px 0px;
     color: white;   
 }
 
@@ -67,7 +67,7 @@ body {
 }
 
 #remotecontrol {
-    top: 30px;
+    top: 40px;
     left: 20px;
     position: absolute;
 }

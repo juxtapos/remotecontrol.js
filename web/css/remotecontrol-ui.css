@@ -62,11 +62,6 @@
     color: orange;
 }
 
-.remotecontrol .tokenDisplay {
-    text-align: center;
-    line-height: 2.5em;
-}
-
 .remotecontrol select {
     display: block;
     width: 80%;

@@ -4,7 +4,9 @@ function Scenario1 (rch) {
 
     function init (container) {
         for (var i = 20; i--;) {
-            $(container).append('<div class="box">&nbsp;</div>');
+            var l = 50,
+                s = Math.round(Math.random() * 50) + 50;
+            $('<div class="box">&nbsp;</div>').appendTo(container).css('background-color', 'hsl(57, ' + s + '%, ' + l + '%)')
         }
         self.container = container;
 
@@ -68,8 +70,7 @@ function Scenario1 (rch) {
 }
 Scenario1.title = 'Touch Selection';
 Scenario1.description = 'A single-finger touch move on the remote device is used to create a \
-    pointer function on the host application.\n\nSingle-finger touches are easily captured by \
-    listening for rcjs:singletouchstart, rcjs:singletouchmove and rcjs:singletouchend events.';
+    pointer function on the host application.';
 
 function Scenario2 (rch) {
 
@@ -341,4 +342,5 @@ function Scenario5 (rch) {
     }
 }
 Scenario5.title = 'Low-level';
-Scenario5.description = 'Testing tap, touchmove, swipe, pinch, rotate gestures.';
+Scenario5.description = 'Testing tap, touchmove, swipe, pinch & rotate gestures.\n\n\
+    Currently implemented are touchmove, swipe, pinch & rotate. Taps are coming.';

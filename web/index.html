@@ -67,7 +67,11 @@
         });
 
         rch.addEventListener('rcjs:token', function (data) {
-            $('#remotecontrol .tokenDisplay').empty().append(data.tokenId);
+            $('#getTokenButton span').empty().append(data.tokenId);
+            // Remove the displayed token after token TTL was reached. 
+            window.setTimeout(function () {
+                $('#getTokenButton span').empty();
+            }, 60000);
         });
 
         var foundScenario, idx = 1, slctd;
@@ -97,7 +101,7 @@
         <p>Click the button to get a fresh token to enter on your mobile device</p>
         <button id="getTokenButton">
             <img src="images/reload.png" width="18"/><span>Token</span></button>
-        <div class="tokenDisplay">&lt;token&gt;</div>
+        <!--<div class="tokenDisplay">&lt;token&gt;</div>-->
         <p style="font-size:100%">Select demo scenario</p>
         <select id="scenarioSelect"></select>
 	</div>

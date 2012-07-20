@@ -50,7 +50,7 @@
 
 
 .Scenario2 .box.selected {
-    background-color: hsla(0, 0%, 100%, .5);
+    background-color: hsla(0, 0%, 100%, .2);
     outline: 1px solid white;
 }
 
