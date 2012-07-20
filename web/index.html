@@ -62,12 +62,12 @@
                 pointerMode : true
             });
 
-        document.querySelector('#getTokenButton').addEventListener('click', function () { 
+        $('#getTokenButton').on('click', function () { 
             rch.requestToken();
         });
 
         rch.addEventListener('rcjs:token', function (data) {
-            document.querySelector('#remotecontrol .tokenDisplay').innerHTML = data.tokenId;
+            $('#remotecontrol .tokenDisplay').empty().append(data.tokenId);
         });
 
         var foundScenario, idx = 1, slctd;

@@ -72,7 +72,7 @@ function RemoteControl (options) {
 		}
 	})(this.showTouches);
 
-	var lastMotionEvent = 0;
+	var lastMotionEvent = 0, lastOrientationEvent = 0;
 
 	function genericEventHandler (event) {
 		var eventobj = copyEvent(event),
@@ -81,9 +81,16 @@ function RemoteControl (options) {
 		if (self.showTouches) {
 			showTouches(event);	
 		}
-		if (event.type === 'devicemotion' || event.type === 'deviceorientation') {
+		if (event.type === 'devicemotion') {
 			if (ts - lastMotionEvent > self.deviceEventInterval) {
 				lastMotionEvent = ts;
+			} else {
+				fireEvent = false;
+			}
+		}
+		if (event.type === 'deviceorientation') {
+			if (ts - lastOrientationEvent > self.deviceEventInterval) {
+				lastOrientationEvent = ts;
 			} else {
 				fireEvent = false;
 			}

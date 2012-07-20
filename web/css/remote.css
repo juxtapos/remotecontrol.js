@@ -28,9 +28,51 @@ html, body {
 }
 
 #remotecontrol {
-    left: 20%;
-    top: 20%;
-    border: 10px solid gray;
+    left: 20px;
+    top: 20px;
+    width: auto;
+    height: auto;
+    box-shadow: inset 2px 2px 3px 1px rgba(0, 0, 0, 0.9);
+    padding-left: 20px;
+    background: linear-gradient(
+        top, 
+        hsla(0, 0%, 100%, 0.9) 0%,
+        hsla(0, 0%, 100%, 0.1) 100%);
+}
+
+.remotecontrol > * {
+    float: left;
+}
+
+.remotecontrol p {
+    display: none;
+    width: auto;
+    float: none;
+    margin-top: 22px;
+}
+
+.remotecontrol label {
+    margin-top: 24px;
+    height: 40px;
+}
+
+.remotecontrol input {
+    width: 130px;
+    margin-top: 24px;
+    margin-left: 10px;
+    height: 44px;
+}
+
+.remotecontrol button {
+    float: right;
+    width: 120px;
+    margin: 22px 20px 0 10px;
+    height: 60px;
+}
+
+.remotecontrol .msg {
+    clear: both;
+    
 }
 
 #logger {
