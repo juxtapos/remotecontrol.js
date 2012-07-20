@@ -114,7 +114,7 @@ function Scenario2 (rch) {
         });
 
         rch.addEventListener('rcjs:pinch', function (event) {
-            target.css('background-color' , 'hsl(' + event.rotation + ', 100%, 50%)');
+            $(target).css('background-color' , 'hsl(' + event.rotation + ', 100%, 50%)');
         });
 
         rch.addEventListener('rcjs:swipeend', function (event) {

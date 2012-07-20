@@ -14,8 +14,8 @@
     margin: 20px;
     float: left;
     box-shadow: 2px 2px 10px 0px rgba(0, 0, 0, 0.5);
-    transition-property: box-shadow, left, top;
-    transition-duration: 1s;
+    transition-property: box-shadow, left, top, scale;
+    transition-duration: 200ms;
 }
 
 .Scenario1 .box.focused {
@@ -23,6 +23,7 @@
     left: -7px;
     top: -5px;
     outline: 2px solid white;
+    transform: scale(1.2);
 }
 
 /*
@@ -44,7 +45,7 @@
     float: left;
     box-shadow: 2px 2px 10px 0px rgba(0, 0, 0, 0.5);
     transition-property: box-shadow, left, top;
-    transition-duration: 1s;
+    transition-duration: 500ms;
     color: white;
 }
 
