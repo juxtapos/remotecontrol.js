@@ -10,3 +10,6 @@
    * Make custom events configurable (like standard DOM events).
    * Add connection handling (signal partners on disconnect).
    * Signal on host when remote control is active.
+   * Finish Scenario5, add info and make first scenario. 
+   * DONE: Make scenarios explicit. 
+   * Fix mouse selection in scenario 3. 
