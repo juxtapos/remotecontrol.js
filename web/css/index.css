@@ -63,7 +63,7 @@ body {
 
 #scenarios .stage {
     position: relative;
-    overflow: hidden;
+    xoverflow: hidden;
     height: 100%;
 }
 
