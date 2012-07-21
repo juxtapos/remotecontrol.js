@@ -13,3 +13,8 @@
    * Finish Scenario5, add info and make first scenario. 
    * DONE: Make scenarios explicit. 
    * Fix mouse selection in scenario 3. 
+   * Fix jquery draggable offset in scenario 3.
+   * Use proper HTML5 style structure. 
+   * Use <sections> in sidebar. 
+   * Document all events fired on host and remote.
+   * Add logging module for server. 
