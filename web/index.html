@@ -3,7 +3,7 @@
 <head>
     <meta http-equiv="content-type" content="text/html; charset=UTF-8">
 	<title>remotecontrol.js</title>
-    <!--<link href='http://fonts.googleapis.com/css?family=Syncopate:400,700' rel='stylesheet' type='text/css'>-->
+    <link href='http://fonts.googleapis.com/css?family=Syncopate:400,700' rel='stylesheet' type='text/css'>
     <!--<link href='http://fonts.googleapis.com/css?family=Droid+Serif' rel='stylesheet' type='text/css'>-->
     <link href='http://fonts.googleapis.com/css?family=Droid+Sans' rel='stylesheet' type='text/css'>
     <link rel="stylesheet" href="css/index.css" type="text/css">
@@ -28,9 +28,10 @@
 
         function selectScenario (scenario) { 
             $('#scenarios').removeClass('on');
+            $('#scenarioSelect').attr('disabled', 'disabled');
             (function (scenario) {
                 window.setTimeout(function () {
-                    $('#scenarios .stage').removeClass(scenario);
+                    $('#scenarios .stage').removeClass(currentScenarioName);
                     $('#scenarios .stage').empty().addClass(scenario);
                     $('#scenarios').addClass('on');
                     var scenarioObj = new window[scenario](rch);
@@ -44,6 +45,7 @@
                     }
                     currentScenarioName = scenario;
                     currentScenario = scenarioObj;
+                    $('#scenarioSelect').removeAttr('disabled');
                 }, 1000);
             })(scenario);
         }
@@ -79,12 +81,14 @@
             }, 60000);
         });
 
+        // Search for scenarios, that is currently global functions whose names are 'ScenarioN', 
+        // where N is continuous number from 1..n. 
         var foundScenario, idx = 1, slctd;
         do {
             foundScenario = false
             if (window['Scenario' + idx]) {
                 var scene = window['Scenario' + idx];
-                slctd = 'Scenario' + idx == currentScenario ? 'selected' : '';
+                slctd = 'Scenario' + idx == currentScenarioName ? 'selected' : '';
                 $('#scenarioSelect').append('<option value="Scenario' + idx  + '" ' + slctd + '>' + scene.title + '</option>');
                 foundScenario = true;
             }
@@ -101,17 +105,36 @@
     </script>
 </head>
 <body>
-	<div class="remotecontrol" id="remotecontrol">
-        <label>remotecontrol.js</label>
-        <p>Click the button to get a fresh token to enter on your mobile device</p>
-        <button id="getTokenButton"><img src="images/reload.png" width="18"/><span>Token</span></button>
-	</div>
+	
     <div id="sidebar">
+        <div>
+            <div class="description">What's This About?</div>
+            <p>remotecontrol.js is an experiment to use gestures, touches and other events like orientation and motion 
+                from mobile devices in web applications on the desktop. After coupling a mobile device to an application, 
+                its range of additional events can be used to augment the opportunities for human-computer interaction.</p>
+        </div>
+        <div>
+            <div class="description">Get Token</div>
+            <p>Click the button to get a fresh token to enter on your mobile device. I've already done that for you. The 
+                token times out after 1 minute.</p>
+            <div class="remotecontrol" id="remotecontrol">
+                <label>remotecontrol.js</label>
+                <p></p>
+                <button id="getTokenButton"><img src="images/reload.png" width="18"/><span>Token</span></button>
+            </div>
+        </div>
         <div id="scenarioSelectBox">
-            <p style="font-size:100%">Select demo scenario:</p>
+            <div class="description">Select Demo Scenario</div>
             <select id="scenarioSelect"></select>    
         </div>
         <div id="scenarioDescription"></div>
+        <!--<div id="compatNote">
+            <p><strong>Compatibility:</strong></p>
+            <p>The demo application should run on a decent Chrome and Firefox browser.
+                Internet Explorer support is coming.</p>
+            <p>The remote controller application was tested on Safari Mobile 5, it should
+                however run on any recent Webkit-based browser.</p>
+        </div>-->
     </div>
     <div id="scenarios">
         <div class="stage"></div>

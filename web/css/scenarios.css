@@ -3,7 +3,6 @@
 */
 .Scenario1.stage {
     background: radial-gradient(1000px 80px, #505050 0%, #202020 100%);
-    padding: 25px;
 }
 
 .Scenario1 .box {
@@ -32,7 +31,6 @@
 
 .Scenario2.stage {
     background-color: #024d70;
-    padding: 100px;
 }
 
 .Scenario2 .box {

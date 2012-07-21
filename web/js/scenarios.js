@@ -165,7 +165,7 @@ function Scenario3 (rch) {
     ScenarioBase.apply(this, arguments);
     var selectedPhoto;
 
-    function init (container) {
+    this.init = function (container) {
         var stage = container;
         var url = 'https://ajax.googleapis.com/ajax/services/search/images?v=1.0&q=graffiti nyc&rsz=8&callback=?';
         $.getJSON(url, function (data) {
