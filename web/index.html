@@ -24,21 +24,21 @@
     
     function init (scenario) {
         var rch;
-        var currentScenarioName = scenario, currentScenario;
+        var currentScenarioName = scenario, currentScenario, scenarios = {};
 
         function selectScenario (scenario) { 
             $('#scenarios').removeClass('on');
-            $('#scenarioSelect').attr('disabled', 'disabled');
+            //$('#scenarioSelect').attr('disabled', 'disabled');
             (function (scenario) {
                 window.setTimeout(function () {
                     $('#scenarios .stage').removeClass(currentScenarioName);
                     $('#scenarios .stage').empty().addClass(scenario);
                     $('#scenarios').addClass('on');
-                    var scenarioObj = new window[scenario](rch);
+                    var scenarioObj = new scenarios[scenario].fct(rch);
                     scenarioObj.init($('#scenarios .stage'));
 
-                    var desc = window[scenario].description.replace(/\u000a\u000a/g, "<br><br>");
-                    $('#scenarioDescription').empty().append('<h1>' + window[scenario].title + '</h1>')
+                    var desc = scenarios[scenario].description.replace(/\u000a\u000a/g, "<br><br>");
+                    $('#scenarioDescription').empty().append('<h1>' + scenarios[scenario].title + '</h1>')
                         .append('<p>' + desc + '</p>');
                     if (currentScenario instanceof ScenarioBase) {
                         currentScenario.destroy();
@@ -81,19 +81,11 @@
             }, 60000);
         });
 
-        // Search for scenarios, that is currently global functions whose names are 'ScenarioN', 
-        // where N is continuous number from 1..n. 
-        var foundScenario, idx = 1, slctd;
-        do {
-            foundScenario = false
-            if (window['Scenario' + idx]) {
-                var scene = window['Scenario' + idx];
-                slctd = 'Scenario' + idx == currentScenarioName ? 'selected' : '';
-                $('#scenarioSelect').append('<option value="Scenario' + idx  + '" ' + slctd + '>' + scene.title + '</option>');
-                foundScenario = true;
-            }
-            idx += 1;
-        } while(foundScenario);
+        demoScenarios.forEach(function(desc) {
+            slctd = desc.id == currentScenarioName ? 'selected' : '';
+            $('#scenarioSelect').append('<option value="' + desc.id  + '" ' + slctd + '>' + desc.title + '</option>');
+            scenarios[desc.id] = desc;
+        });
 
         document.querySelector('#scenarioSelect').addEventListener('change', function (event) {
             selectScenario(event.target.value);

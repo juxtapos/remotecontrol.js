@@ -18,7 +18,7 @@ ScenarioBase.prototype.destroy = function () {
 
 
 
-function Scenario1 (rch) {
+function ScenarioTouchSelect (rch) {
     ScenarioBase.apply(this, arguments);
     this.container = null;
     var self = this;
@@ -80,12 +80,9 @@ function Scenario1 (rch) {
         rch.addEventListener('rcjs:singletouchend', up);
     }
 }
-Scenario1.prototype = new ScenarioBase();
-Scenario1.title = 'Touch Selection';
-Scenario1.description = 'A single-finger touch move on the remote device is used to create a \
-    pointer function on the host application.';
+ScenarioTouchSelect.prototype = new ScenarioBase();
 
-function Scenario2 (rch) {
+function ScenarioContextGestures (rch) {
     ScenarioBase.apply(this, arguments);
 
     this.init = function (container) {
@@ -155,13 +152,9 @@ function Scenario2 (rch) {
         });
     }
 }
-Scenario2.prototype = new ScenarioBase();
-Scenario2.title = 'Context Swipes';
-Scenario2.description = 'Combined mouse click selection and swipes: select a box with your mouse \
-then copy it with a "south-swipe, delete it with a "north-swipe", and double/reset the width with \
-"east-/west-swipes". The color can be changed by using a 2-finger rotation gesture.';
+ScenarioContextGestures.prototype = new ScenarioBase();
 
-function Scenario3 (rch) {
+function ScenarioPhotos (rch) {
     ScenarioBase.apply(this, arguments);
     var selectedPhoto;
 
@@ -222,13 +215,9 @@ function Scenario3 (rch) {
         });
     }
 }
-Scenario3.prototype = new ScenarioBase();
-Scenario3.title = 'Photos';
-Scenario3.description = 'Photos can be dragged with the mouse, selected with a click and then\
-    rotated and scaled with a rotate and pinch gestures on the remote device.\n\n\
-    The photos come from live a Google search. ';
+ScenarioPhotos.prototype = new ScenarioBase();
 
-function Scenario4 (rch) {
+function ScenarioRotate (rch) {
     ScenarioBase.apply(this, arguments);
     var selected = 10;
 
@@ -265,11 +254,9 @@ function Scenario4 (rch) {
         // $('#C' + selected).addClass('high');
     }
 }
-Scenario4.prototype = new ScenarioBase();
-Scenario4.title = 'Rotate Things';
-Scenario4.description = 'Control with device orientation';
+ScenarioRotate.prototype = new ScenarioBase();
 
-function Scenario5 (rch) {
+function ScenarioLowLevel (rch) {
     ScenarioBase.apply(this, arguments);
     var selected = 10;
 
@@ -320,7 +307,43 @@ function Scenario5 (rch) {
         }
     }
 }
-Scenario5.prototype = new ScenarioBase();
-Scenario5.title = 'Low-level';
-Scenario5.description = 'Testing tap, touchmove, swipe, pinch & rotate gestures.\n\n\
-    Currently implemented are touchmove, swipe, pinch & rotate. Taps are coming.';
+ScenarioLowLevel.prototype = new ScenarioBase();
+
+var demoScenarios = [
+    {
+        title: 'Touch Selection',
+        description: 'A single-finger touch move on the remote device is used to create a \
+            pointer function on the host application.',
+        id: 'Scenario1',
+        fct: ScenarioTouchSelect
+    },
+    {
+        title: 'Context Swipes',
+        description: 'Combined mouse click selection and swipes: select a box with your mouse \
+            then copy it with a "south-swipe, delete it with a "north-swipe", and double/reset the \
+            width with "east-/west-swipes". The color can be changed by using a 2-finger rotation gesture.',
+        id: 'Scenario2',
+        fct: ScenarioContextGestures
+    },
+    {
+        title: 'Photos',
+        description: 'Photos can be dragged with the mouse, selected with a click and then\
+            rotated and scaled with a rotate and pinch gestures on the remote device.\n\n\
+            The photos come from live a Google search. ',
+        id: 'Scenario3',
+        fct: ScenarioPhotos
+    },
+    {
+        title: 'Rotate Things',
+        description: 'Control with device orientation',
+        id: 'Scenario4',
+        fct: ScenarioRotate
+    },
+    {
+        title: 'Low-level',
+        description: 'Testing tap, touchmove, swipe, pinch & rotate gestures.\n\n\
+            Currently implemented are touchmove, swipe, pinch & rotate. Taps are coming.',
+        id: 'Scenario5',
+        fct: ScenarioLowLevel
+    }
+];
