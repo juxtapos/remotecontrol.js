@@ -2,7 +2,7 @@
   "author": "Claus Augusti <claus@formatvorlage.de>",
   "name": "remotecontrol.js",
   "description": "Enhance user interaction of an web application by using an additional browsing device and its features like gestures, orientation, etc.",
-  "version": "0.5",
+  "version": "0.9.0",
   "homepage": "https://github.com/juxtapos/remotecontrol.js",
   "keywords": ["realtime", "websockets", "socket.io", "touch", "gesture", "multitouch"],
   "os" : [ "darwin", "linux", "windows" ],
@@ -12,13 +12,13 @@
   },
   "dependencies": {
     "socket.io": "0.9.6",
-    "socket.io-client": "0.9.6",
-    "connect": "2.3.3"
+    "socket.io-client": "0.9.6", 
+    "winston": "0.6.2"
   },
   "devDependencies": {},
   "optionalDependencies": {},
   "engines": {
-    "node": ">=0.6"
+    "node": ">=0.8"
   },
   "license": "BSD",
   "scripts": {
