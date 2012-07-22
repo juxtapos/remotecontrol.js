@@ -1,17 +1,36 @@
+var // time max lifetime after creation in ms. 
+	TOKEN_TTL = 60000,
+	// Winston debug level, see winston.config.syslog.levels and mind the Winston bug that debug 
+	// level 'debug' prints debug and error level messages only!
+	DEBUG_LEVEL = 'info',
+	// File name to log to, relative to package root folder. Set to empty value if you don't want logging.
+	LOG_FILE = 'remotecontrol-server.log';
+
 var socketio = require('socket.io'),
+	winston = require('winston'),
 	crypto = require('crypto'),
 	io = socketio.listen(1337),
-	tokens = {},
+	tokenIdsToSockets = {},
 	sockets = {},
-	TOKEN_TTL = 60000,
-	DEBUG_LEVEL = 1; // 3 for full message logging
+	level = winston.config.syslog.levels[DEBUG_LEVEL],
+	// translate to socket.io levels. 
+	socketioDebugLevel = level >= 4 ? 0 : 
+						 level == 3 ? 1 : 
+						 level == 2 || level == 1 ? 2 : 3,
+	transports = [
+		new (winston.transports.Console)({ level: DEBUG_LEVEL }),
+		LOG_FILE ? new (winston.transports.File)({ level: DEBUG_LEVEL, filename: LOG_FILE }) : null
+	],
+	logger = new (winston.Logger)({
+    	transports: transports
+    });
 
 //
 // Configure socket.io.
 // 
 io.configure(function(){
     io.enable('browser client etag');
-    io.set('log level', DEBUG_LEVEL);
+    io.set('log level', socketioDebugLevel);
 });
 
 /**
@@ -20,10 +39,12 @@ io.configure(function(){
  * @returns {String} token ID
  */
 function createTokenId() {
-	var key = createKey(),
-		offset = parseInt(Math.random() * (key.length - 5));
-	//return 1;
-	return key.substring(offset, offset + 5);
+	var len = 2,
+		key = createKey(),
+		offset = parseInt(Math.random() * (key.length - len));
+	
+	return 1;
+	return key.substring(offset, offset + len);
 }
 
 /**
@@ -38,33 +59,39 @@ function createKey() {
 }
 
 io.sockets.on('connection', function (socket) {
-	//console.log('socket connected ' + socket.id);
+	logger.info('client connected ' + socket.id);
 
 	sockets[socket.id] = {
-		tokenId: null,
-		socket: socket
+		token: null,
+		socket: socket,
+		peerSocket: null
 	}
 
 	socket.on('disconnect', function disconnect () {
-		//console.log('client disconnected ' + socket.id);
+		logger.info('client disconnected ' + socket.id);
 		if (sockets[socket.id]) {
-			if (sockets[socket.id].tokenId) {
-				delete tokens[sockets[socket.id].tokenId];
+			if (sockets[socket.id].token && tokenIdsToSockets[sockets[socket.id].token.id]) {
+				logger.debug('delete token');
+				delete tokenIdsToSockets[sockets[socket.id].tokenId];
+			}
+			if (sockets[socket.id].peerSocket) {
+				logger.debug('notify peer of disconnect');
+				sockets[socket.id].peerSocket.emit('rcjs:remoteDisconnect', {});
+				sockets[sockets[socket.id].peerSocket.id].peerSocket = null;
 			}
 			delete sockets[socket.id];
 		}
 	});
 
 	socket.on('rcjs:requestToken', function (data) {
-		if (tokens[sockets[socket.id].tokenId]) {
-			delete tokens[sockets[socket.id].tokenId];
-		}
 		var tokenId = createTokenId();
-		sockets[socket.id].tokenId = tokenId;
-		tokens[tokenId] = {
-			timeStamp: new Date().getTime(),
-			receiverId: socket.id
+		sockets[socket.id].token = {
+			id: tokenId,
+			timeStamp: new Date().getTime()
 		};
+		tokenIdsToSockets[tokenId] = {
+			receiver: socket
+		}
 		socket.emit('rcjs:token', { tokenId: tokenId } );
 	});
 
@@ -72,39 +99,54 @@ io.sockets.on('connection', function (socket) {
     // Response: on error sends rcjs:supplyToken message back to source, on success a 
     // rcjs:registerSender
 	socket.on('rcjs:supplyToken', function (data) {
-		var token, receiver;
-		if ( (token = tokens[data.tokenId]) ) {
-			receiver = sockets[token.receiverId].socket;
-			if (receiver.sender) {
-				socket.emit('rcjs:supplyToken', { error: 'invalid token (already in use)' } );
-			} else if (new Date().getTime() > token.timeStamp + TOKEN_TTL) {
-				socket.emit('rcjs:supplyToken', { error: 'invalid token (expired)' } );
-				delete tokens[data.tokenId];
+		if (tokenIdsToSockets[data.tokenId]) {
+			var receiverSocket = tokenIdsToSockets[data.tokenId].receiver;
+			var token = sockets[receiverSocket.id].token, receiver;
+			if (token) {
+				if (sockets[receiverSocket.id].peerSocket) {
+					socket.emit('rcjs:supplyToken', { error: 'invalid token (already in use)' } );
+				} else if (new Date().getTime() > token.timeStamp + TOKEN_TTL) {
+					socket.emit('rcjs:supplyToken', { error: 'invalid token (expired)' } );
+					delete tokenIdsToSockets[data.tokenId];
+				} else {
+					sockets[receiverSocket.id].peerSocket = socket;
+					sockets[receiverSocket.id].socket.emit('rcjs:registerSender', { tokenId: data.tokenId } );
+					sockets[socket.id].peerSocket = sockets[receiverSocket.id].socket;
+				}
 			} else {
-				token.senderId = socket.id;
-				receiver.emit('rcjs:registerSender', { tokenId: data.tokenId } );
+			 	socket.emit('rcjs:supplyToken', { error: 'invalid token (unknown)' } );
 			}
-		} else {
-			socket.emit('rcjs:supplyToken', { error: 'invalid token (unknown)' } );
 		}
 	});
 
+	// Request: from sender app after successfully processing an rcjs:registerSender event. 
+	// The key that is required for subsequent eventing from receiver to sender is created. 
+	// The server sends a rcjs:startCapture event to the sender. 
 	socket.on('rcjs:confirmRegistration', function (data) {
-		var token = tokens[data.tokenId];
-		token.key = createKey();
-		var sender = sockets[token.senderId].socket;
-		sender.emit('rcjs:startCapture', { tokenId: data.tokenId, key: token.key, events: data.events } );
+		var token = sockets[socket.id].token;
+		if (token) {
+			token.key = createKey();
+			var sender = sockets[socket.id].peerSocket;
+			sender.emit('rcjs:startCapture', { 
+				tokenId: data.tokenId, 
+				key: token.key, 
+				events: data.events 
+			});
+		}
 	});
 
 	socket.on('rcjs:event', function (data) {
-		var token = tokens[data.tokenId];
-		if (!token) {
-			socket.emit('rcjs:receiverDisconnect', { error: 'tokenId missing, disconnect.' } );
-		} else if (data.key == token.key) {
-			var receiver = sockets[token.receiverId].socket;
-			receiver.emit('rcjs:event', { type: data.type, event: data.event } );
-		} else {
-			socket.emit('rcjs:invalid', { error: 'invalid key' } );
+		if (tokenIdsToSockets[data.tokenId]) {
+			var receiverSocket = tokenIdsToSockets[data.tokenId].receiver;
+			if (sockets[receiverSocket.id]) {
+				var token = sockets[receiverSocket.id].token;
+				if (!token) {
+				} else if (data.key == token.key) {
+					receiverSocket.emit('rcjs:event', { type: data.type, event: data.event } );
+				} else {
+					socket.emit('rcjs:invalid', { error: 'invalid key' } );
+				}
+			}
 		}
 	});
 });
