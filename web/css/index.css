@@ -27,7 +27,7 @@ body {
     margin: 0px 20px 40px 20px;
 }
 
-#sidebar > section a:visited {
+#sidebar > section a:visited, #sidebar > section a:link {
     color: rgb(120, 120, 255);
 }
 
