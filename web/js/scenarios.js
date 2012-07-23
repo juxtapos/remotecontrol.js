@@ -349,6 +349,18 @@ function ScenarioLowLevel (rch) {
             print('Swipe ' + rch.getDirection(event.angle), 'rcjs:swipeend', event);
         });
 
+        this.addEventListener('MSPointerDown', function (event) {
+            print('Start single-touch', 'MSPointerDown', event);
+        });
+
+        this.addEventListener('MSPointerMove', function (event) {
+            print('Single-touch move', 'MSPointerMove', event);
+        });
+
+        this.addEventListener('MSPointerUp', function (event) {
+            print('End single-touch', 'MSPointerUp', event);
+        });
+
         this.addEventListener('devicemotion', function (event) {
             var table = '<table>\
             <tr><th>Device Motion</th></tr>\
@@ -388,7 +400,6 @@ function ScenarioLowLevel (rch) {
             var t = '<table class="smalldata">';
             for (prop in obj) {
                 if (prop === 'type') { continue; }
-                //if (obj[prop] instanceof Array) { continue; }
                 t += '<tr><td>' + prop + '</td><td>' + format(obj[prop], digits) + '</td></tr>'
             }
             return t += '</table>';
@@ -396,9 +407,6 @@ function ScenarioLowLevel (rch) {
 
         var lastEvent = null;
         function print (gesture, type, obj) {
-
-
-
             if (lastEvent === type) {
                 var evntlst = $('#EventList > div:last-child');
                 var cnt = evntlst.find('span');
@@ -419,36 +427,6 @@ function ScenarioLowLevel (rch) {
             }
             lastEvent = type;
         }
-
-        // rch.emitEvent('rcjs:singletouchend', {
-        //     clientX: Math.random(),
-        //     clientY: Math.random(),
-        //     touches: [],
-        //     changedTouches: []
-        // })
-
-        // rch.emitEvent('devicemotion', {
-        //     acceleration: {
-        //         x: Math.random(),
-        //         y: Math.random(),
-        //         z: Math.random()
-        //     },
-        //     accelerationIncludingGravity: {
-        //         x: Math.random(),
-        //         y: Math.random(),
-        //         z: Math.random()
-        //     },
-        //     rotationRate: {
-        //         alpha: Math.random(),
-        //         beta: Math.random(),
-        //         gamma: Math.random()
-        //     }
-        // });
-        // rch.emitEvent('deviceorientation', {
-        //     alpha: Math.random(),
-        //     beta: Math.random(),
-        //     gamma: Math.random()
-        // });
     }
 }
 ScenarioLowLevel.prototype = new ScenarioBase();

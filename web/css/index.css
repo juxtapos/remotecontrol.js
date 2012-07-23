@@ -27,13 +27,17 @@ body {
     margin: 0px 20px 40px 20px;
 }
 
+#sidebar > section .small {
+    font-size: 10px;
+}
+
 #sidebar > section a:visited, #sidebar > section a:link {
     color: rgb(120, 120, 255);
 }
 
 
 #sidebar > section:first-child {
-    padding-top: 40px;
+    padding-top: 20px;
 }
 
 #scenarioDescription {

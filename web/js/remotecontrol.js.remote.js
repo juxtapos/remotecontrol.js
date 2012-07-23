@@ -135,6 +135,7 @@ function RemoteControl (options) {
 
 	function copyEvent (event) {
 		var type = event.type, copy;
+		console.log(type);
 		switch (type) {
 			case 'touchstart' :
 			case 'touchmove' :
@@ -144,6 +145,14 @@ function RemoteControl (options) {
 					targetTouches: copyTouchEvents(event, 'targetTouches'),
 					touches: copyTouchEvents(event, 'touches')
 				}
+				break;
+			case 'MSPointerDown' :
+			case 'MSPointerMove' :
+			case 'MSPointerUp' :
+				copy = {
+					clientX: event.clientX,
+					clientY: event.clientY
+				};
 				break;
 			case 'mousedown' :
 			case 'mouseup' :
@@ -172,6 +181,10 @@ function RemoteControl (options) {
 					accelerationIncludingGravity: event.accelerationIncludingGravity,
 					rotationRate: event.rotationRate
 				}
+			default : 
+				copy = {
+					error: 'not supported'
+				};
 		}
 		copy.type = type;
 		return copy;

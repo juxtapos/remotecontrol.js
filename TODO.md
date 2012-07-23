@@ -4,7 +4,6 @@
    * DONE: Implement single, double, triple taps.
    * DONE: Expose pinchstart, end and swipestart, end events. 
    * DONE: Implement rotation delta for Scenario3.
-   * Implement Scenario4.
    * DONE: Implement color wheel selection in Scenario2. 
    * Remote threshold should come from host configuration. 
    * Make custom events configurable (like standard DOM events).
@@ -22,3 +21,6 @@
    * Check if gesture start/end events have all available properties. 
    * Break relation between pointerMode and singletouch. 
    * analyseTouch: put delays into constants, or, even better, rewrite the darn thing. 
+   * IE 10 support. 
+   * Add general event throttling from remote to host. 
+   * Add threshold for motion values. 

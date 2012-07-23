@@ -92,9 +92,9 @@
                 host: location.host, 
                 port: 1337,
                 capture: [
-                    //'MSPointerUp',
-                    //'MSPointerMove',
-                    //'MSPointerDown',
+                    'MSPointerUp',
+                    'MSPointerMove',
+                    'MSPointerDown',
                     'touchstart', 
                     'touchmove',
                     'touchend',
@@ -104,7 +104,8 @@
                     'deviceorientation',
                     'devicemotion'
                 ],
-                pointerMode : true
+                pointerMode : true,
+                deviceEventThrottle: 200
             });
 
         function showMessage (msg) {
@@ -156,21 +157,24 @@
 <body>
     <div id="sidebar">
         <section>
-            <div class="description">What's This About?</div>
+            <h1>What's This About?</h1>
             <p>remotecontrol.js is an experiment to use gestures, touches and other events like orientation and motion 
                 from mobile devices in web applications on the desktop. After coupling a mobile device to an application, 
-                all of its events can be captured by a host application and used for enhancing its user interaction.
-                Find out more in the <a href="https://github.com/juxtapos/remotecontrol.js">project's readme</a>.</p>
+                it serves as an additional input device. 
+                Find out more in the <a href="https://github.com/juxtapos/remotecontrol.js">project's readme</a> or get 
+                started right away with the following steps:</p>
         </section>
         <section>
             <div class="description">Open Remote Control</div>
-            <p>Open the <a href="remote.html">remote controller application</a> on your mobile device (preferably iOS / 
-                Safari Mobile. It should however work on any Webkit-based browser, but I haven't tested it yet.</p>
+            <p>Open the <a href="remote.html">remote controller application</a> on your compatible mobile device.</p>
+            <p class="small">Preferably iOS / Safari Mobile. It should however work on any Webkit-based browser, but I 
+                haven't tested it yet.</p>
         </section>
         <section>
             <div class="description">Get Token</div>
-            <p>Click the button to get a fresh token to enter on your mobile device. I've already done that for you. The 
-                token disappears when timed out after one minute.</p>
+            <p>Enter the token displayed in the button below. The token times out and disappears after one minute, if it did,
+                click the button to request a fresh one.</p>
+            <p>If everything works correctly, you should see a pulsating red message on both devices.</p>
             <div class="remotecontrol" id="remotecontrol">
                 <label>remotecontrol.js</label>
                 <button id="getTokenButton"><img src="images/reload.png" width="18"/><span>Token</span></button>
@@ -185,6 +189,7 @@
         <!--<section id="scenarioDescription">
             <div class="description">Drop me a line</div>
         </section>-->
+        <br><br>
     </div>
     <div id="scenarios">
         <div class="stage"></div>
