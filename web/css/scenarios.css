@@ -212,3 +212,8 @@
     border: 1px solid rgb(80, 80, 80);
     background-color: rgba(220, 220, 220, 0.5);
 }
+
+.Scenario5 #EventList div span {
+    font-size: 10px;
+    padding-left: 10px;
+}

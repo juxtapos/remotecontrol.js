@@ -20,8 +20,8 @@
     var demoScenarios = [
         {
             title: 'Low-level',
-            description: 'Testing tap, touchmove, swipe, pinch & rotate gestures.\n\n\
-                Currently implemented are touchmove, swipe, pinch & rotate. Taps are coming.',
+            description: 'Shows data from single/double-tap, touchmove, swipe, pinch & rotate gestures,\
+                device orientation and motion events.',
             id: 'Scenario5',
             fct: ScenarioLowLevel
         },
@@ -44,7 +44,7 @@
             title: 'Photos',
             description: 'Photos can be dragged with the mouse, selected with a click and then\
                 rotated and scaled with a rotate and pinch gestures on the remote device.\n\n\
-                The photos come from live a Google search. ',
+                The photos come from live a Google search. Just type a query and press enter.',
             id: 'Scenario3',
             fct: ScenarioPhotos
         }
@@ -159,7 +159,13 @@
             <div class="description">What's This About?</div>
             <p>remotecontrol.js is an experiment to use gestures, touches and other events like orientation and motion 
                 from mobile devices in web applications on the desktop. After coupling a mobile device to an application, 
-                all of its events can be captured by a host application and used for enhancing its user interaction.</p>
+                all of its events can be captured by a host application and used for enhancing its user interaction.
+                Find out more in the <a href="https://github.com/juxtapos/remotecontrol.js">project's readme</a>.</p>
+        </section>
+        <section>
+            <div class="description">Open Remote Control</div>
+            <p>Open the <a href="remote.html">remote controller application</a> on your mobile device (preferably iOS / 
+                Safari Mobile. It should however work on any Webkit-based browser, but I haven't tested it yet.</p>
         </section>
         <section>
             <div class="description">Get Token</div>
@@ -176,13 +182,9 @@
             <select id="scenarioSelect"></select>    
         </section>
         <section id="scenarioDescription"></section>
-        <!--<div id="compatNote">
-            <p><strong>Compatibility:</strong></p>
-            <p>The demo application should run on a decent Chrome and Firefox browser.
-                Internet Explorer support is coming.</p>
-            <p>The remote controller application was tested on Safari Mobile 5, it should
-                however run on any recent Webkit-based browser.</p>
-        </div>-->
+        <!--<section id="scenarioDescription">
+            <div class="description">Drop me a line</div>
+        </section>-->
     </div>
     <div id="scenarios">
         <div class="stage"></div>

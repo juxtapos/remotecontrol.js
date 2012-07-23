@@ -159,12 +159,7 @@ function ScenarioPhotos (rch) {
 
     this.init = function (container) { 
         var query = 'graffiti dome',
-            url = getUrl(query),
             self = this;
-
-        function getUrl(query) {
-            return ;
-        }
 
         $(container).append('<div class="search"><label>Google Image Search</label><input id="SearchTerm"></div><div class="photos"></div>');
         $(container).find('#SearchTerm').attr('value', query)
@@ -311,52 +306,47 @@ function ScenarioLowLevel (rch) {
             </div>');
 
         this.addEventListener('rcjs:singletap', function (event) {
-            $('<div>Single-Tap</div>').appendTo($('#EventList'));
+            print('Single-Tap', 'rcjs:singletap');
         });
 
         this.addEventListener('rcjs:doubletap', function (event) {
-            $('<div>Double-Tap</div>').appendTo($('#EventList'));
+            print('Double-Tap', 'rcjs:doubletap');
         });
 
         this.addEventListener('rcjs:singletouchstart', function (event) {
-            print('singletouch', 'rcjs:pinchstart', event);
+            print('Start single-touch', 'rcjs:pinchstart', event);
         });
 
         this.addEventListener('rcjs:singletouchmove', function (event) {
-            print('singletouch', 'rcjs:singletouchmove', event);
+            print('Single-touch move', 'rcjs:singletouchmove', event);
         });
 
         this.addEventListener('rcjs:singletouchend', function (event) {
-            print(null, 'rcjs:singletouchend', event);
-            $('<div>Single-Touch</div>').appendTo($('#EventList'));
+            print('End single-touch', 'rcjs:singletouchend', event);
         });
 
         this.addEventListener('rcjs:pinchstart', function (event) {
-            print('pinch', 'rcjs:pinchstart', event);
+            print('Start pinch', 'rcjs:pinchstart', event);
         });
 
         this.addEventListener('rcjs:pinch', function (event) {
-            print('pinch', 'rcjs:pinch', event);
+            print('Pinching', 'rcjs:pinch', event);
         });
 
         this.addEventListener('rcjs:pinchend', function (event) {
-            print(null, 'rcjs:pinchend', event);
-            $('<div>Pinch</div>').appendTo($('#EventList'));
+            print('End pinch', 'rcjs:pinchend', event);
         });
 
         this.addEventListener('rcjs:swipestart', function (event) {
-            print('swipe', 'rcjs:swipestart', event);
+            print('Start swipe', 'rcjs:swipestart', event);
         });
 
         this.addEventListener('rcjs:swipe', function (event) {
-            print('swipe', 'rcjs:swipe', event);
+            print('Swipe', 'rcjs:swipe', event);
         });
 
         this.addEventListener('rcjs:swipeend', function (event) {
-            print(null, 'rcjs:swipeend', event);
-            var dir = rch.getDirection(event.angle),
-                name = 'Swipe ' + dir;
-            $('<div>' + name + '</div>').appendTo($('#EventList'));
+            print('Swipe ' + rch.getDirection(event.angle), 'rcjs:swipeend', event);
         });
 
         this.addEventListener('devicemotion', function (event) {
@@ -404,11 +394,30 @@ function ScenarioLowLevel (rch) {
             return t += '</table>';
         }
 
+        var lastEvent = null;
         function print (gesture, type, obj) {
+
+
+
+            if (lastEvent === type) {
+                var evntlst = $('#EventList > div:last-child');
+                var cnt = evntlst.find('span');
+                if (cnt.length > 0) { 
+                    var val = 1 + parseInt(cnt.html());
+                    cnt.text(val);
+                } else {
+                    evntlst.append('<span>1</span>');
+                }
+            } else {
+                $('<div>' + gesture + '</div>').appendTo($('#EventList'));
+            }
             gesture = gesture || '(none)';
             $('#Gesture').empty().append(gesture);
             $('#EventType').empty().append(type);
-            $('#Values').empty().append(printTable(obj));
+            if (obj) {
+                $('#Values').empty().append(printTable(obj));
+            }
+            lastEvent = type;
         }
 
         // rch.emitEvent('rcjs:singletouchend', {
