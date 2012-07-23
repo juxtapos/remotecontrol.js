@@ -4,11 +4,11 @@ function RemoteControl (options) {
 		port = options.port,
 		socket = io.connect(host + ':' + port),
 		self = this;
-	this.key = null; // supplied by server on successful peering
-	this.captureEvents = []; // supplied by receiver
-	this.events = {};	// required for the EventHandler 'mixin'
+	this.key = null; // Supplied by server on successful peering after rcjs:startCapture event. 
+	this.captureEvents = []; // Supplied by receiver after rcjs:startCapture event. 
+	this.events = {};	// Required for the EventHandler 'mixin'
 	this.showTouches = options.showTouches || false;
-	this.deviceEventInterval = options.deviceEventInterval || 200;
+	this.deviceEventInterval;  // Set from receiver after rcjs:startCapture event. 
 	this.token = null;
 
 	socket.on('connect', function () {
@@ -16,6 +16,7 @@ function RemoteControl (options) {
 
 		socket.on('rcjs:startCapture', function (data) {
 			self.key = data.key;
+			self.deviceEventInterval = data.deviceEventInterval;
 			capture(true, data.events);
 			self.emitEvent('rcjs:startCapture');
 		});
@@ -83,6 +84,7 @@ function RemoteControl (options) {
 		if (self.showTouches) {
 			showTouches(event);	
 		}
+		console.log(self.deviceEventInterval)
 		if (event.type === 'devicemotion') {
 			if (ts - lastMotionEvent > self.deviceEventInterval) {
 				lastMotionEvent = ts;

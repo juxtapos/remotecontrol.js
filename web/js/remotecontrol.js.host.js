@@ -5,6 +5,7 @@ function RemoteControlHost (options) {
 	this.captureEvents = options.capture || []; // required by the EventHandler 'mixin' 
 	this.events = {};	// required by the EventHandler 'mixin'
 	this.pointerMode = options.pointerMode;
+	this.deviceEventInterval = options.deviceEventInterval || 200;
 	this.isReceiving = false;
 	
 	socket.on('connect', function () {
@@ -14,7 +15,11 @@ function RemoteControlHost (options) {
 		// Response: rcjs:confirmRegister message to server.  
 		socket.on('rcjs:registerSender', function (data) {
 			self.isReceiving = true;
-			socket.emit('rcjs:confirmRegistration', { tokenId: data.tokenId, events: self.captureEvents } );
+			socket.emit('rcjs:confirmRegistration', { 
+				tokenId: data.tokenId, 
+				events: self.captureEvents,  
+				deviceEventInterval: self.deviceEventInterval
+			} );
 			socket.on('rcjs:event', function (data) {
 				type = data.type;
 				if (type && self.isReceiving) { self.emitEvent(type, data.event); }

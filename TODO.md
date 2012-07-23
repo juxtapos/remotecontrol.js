@@ -5,7 +5,7 @@
    * DONE: Expose pinchstart, end and swipestart, end events. 
    * DONE: Implement rotation delta for Scenario3.
    * DONE: Implement color wheel selection in Scenario2. 
-   * Remote threshold should come from host configuration. 
+   * DONE: Remote threshold should come from host configuration. 
    * Make custom events configurable (like standard DOM events).
    * DONE: Add connection handling (signal partners on disconnect).
    * DONE: Signal on host when remote control is active.
@@ -24,3 +24,4 @@
    * IE 10 support. 
    * Add general event throttling from remote to host. 
    * Add threshold for motion values. 
+   * Add basic browser engine detection to kick out non-compatible devices. 

@@ -42,7 +42,7 @@ function createTokenId() {
 	var len = 5,
 		key = createKey(),
 		offset = parseInt(Math.random() * (key.length - len));
-	return 1;
+	//return 1;
 	return key.substring(offset, offset + len);
 }
 
@@ -129,7 +129,8 @@ io.sockets.on('connection', function (socket) {
 			sender.emit('rcjs:startCapture', { 
 				tokenId: data.tokenId, 
 				key: token.key, 
-				events: data.events 
+				events: data.events,
+				deviceEventInterval: data.deviceEventInterval
 			});
 		}
 	});
