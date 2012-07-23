@@ -130,7 +130,8 @@
 .Scenario5.stage {
     padding: 50px;
     background-color: rgb(60, 60, 60);
-    color: white;
+    color: black;
+    background-image: url(../images/xdv6hwv.png);
 }
 
 .Scenario5 .left {
@@ -164,7 +165,6 @@
 .Scenario5.stage table th {
     vertical-align: top;
     text-align: left;
-    border-bottom: 2px dotted gray;
 }
 
 .Scenario5.stage td.sub {
@@ -173,7 +173,6 @@
 
 .Scenario5 h1 {
     font-family: Courier, monospace;
-    border-bottom: 2px dotted gray;
 }
 
 .Scenario5 .orientationplane {
@@ -211,5 +210,5 @@
     padding: 5px;
     margin: 5px 5px 5px 0;
     border: 1px solid rgb(80, 80, 80);
-    background-color: rgb(70, 70, 70);
+    background-color: rgba(220, 220, 220, 0.5);
 }
