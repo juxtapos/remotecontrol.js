@@ -5,25 +5,32 @@ function RemoteControlHost (options) {
 	this.captureEvents = options.capture || []; // required by the EventHandler 'mixin' 
 	this.events = {};	// required by the EventHandler 'mixin'
 	this.pointerMode = options.pointerMode;
+	this.isReceiving = false;
 	
 	socket.on('connect', function () {
-		console.log('connected to server');
+		self.emitEvent('rcjs:connect', {});
 
 		// Request: from server to receiver after a valid rcjs:supplyToken message from sender. 
 		// Response: rcjs:confirmRegister message to server.  
 		socket.on('rcjs:registerSender', function (data) {
-			console.log('sender registered');
+			self.isReceiving = true;
 			socket.emit('rcjs:confirmRegistration', { tokenId: data.tokenId, events: self.captureEvents } );
 			socket.on('rcjs:event', function (data) {
 				type = data.type;
-				if (type) { self.emitEvent(type, data.event); }
+				if (type && self.isReceiving) { self.emitEvent(type, data.event); }
 			} );
+			self.emitEvent('rcjs:remoteConnect', data);
 		});
 
 		// Request: from server as response to rcjs:requestToken message with tokenId property.
 		// Emits rcjs:requestToken event 
 		socket.on('rcjs:token', function (data) {
 			self.emitEvent('rcjs:token', data);
+		});
+
+		socket.on('rcjs:remoteDisconnect', function (data) {
+			self.isReceiving = false;
+			self.emitEvent('rcjs:remoteDisconnect', {});
 		});
 	});
 
@@ -43,8 +50,9 @@ function RemoteControlHost (options) {
 	}
 
 	this.emitEvent = function (type, event) {
+		//console.log('emit ' + type);
 		EventHandler.emitEvent.apply(self, arguments);
-		if (!~type.indexOf('rcjs:')) { 
+		if (!~type.indexOf('rcjs:')) {
 			var eventObj = analyseTouch(type, event); 
 			if (eventObj) {
 				EventHandler.emitEvent.call(self, eventObj.type, eventObj.event);
@@ -57,7 +65,8 @@ function RemoteControlHost (options) {
 			touchIds = {},
 			gestureStartTime,
 			currentGesture, 
-			lastEvent;
+			lastEvent,
+			lastTap;
 
 		return function (type, event) {
 			var hasTouches = true,
@@ -78,7 +87,9 @@ function RemoteControlHost (options) {
 						} );
 					});
 					setTimeout(function ( ) {
-						if (currentGesture) return;
+						if (currentGesture) {
+								return;
+						}
 
 						if (that.pointerMode && touches.length === 1) {
 							currentGesture = 'rcjs:singletouch';
@@ -113,9 +124,23 @@ function RemoteControlHost (options) {
 						}
 					});
 					hasTouches = event.touches && event.touches.length > 0;
-					if (!hasTouches && that.pointerMode) {
-						self.emitEvent('rcjs:singletouchend', {		
-						});	
+					var time = new Date().getTime();
+					if (!hasTouches && time - gestureStartTime < 100) {
+						if (lastTap) {
+							if (time - lastTap < 200) {
+								self.emitEvent('rcjs:doubletap', {});
+								delete lastTap;
+							}
+						} else {
+							self.emitEvent('rcjs:singletap', {
+								clientX: event.clientX,
+								clientY: event.clientY
+							});	
+							lastTap = time;
+						}
+					} else if (!hasTouches && that.pointerMode) {
+						if (currentGesture == 'rcjs:singletouch')
+						self.emitEvent('rcjs:singletouchend', {});	
 					}
 					break;
 				case 'touchmove':

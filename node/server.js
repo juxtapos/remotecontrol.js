@@ -4,7 +4,7 @@ var // time max lifetime after creation in ms.
 	// level 'debug' prints debug and error level messages only!
 	DEBUG_LEVEL = 'info',
 	// File name to log to, relative to package root folder. Set to empty value if you don't want logging.
-	LOG_FILE = 'remotecontrol-server.log';
+	LOG_FILE = null;//remotecontrol-server.log';
 
 var socketio = require('socket.io'),
 	winston = require('winston'),
@@ -17,13 +17,13 @@ var socketio = require('socket.io'),
 	socketioDebugLevel = level >= 4 ? 0 : 
 						 level == 3 ? 1 : 
 						 level == 2 || level == 1 ? 2 : 3,
-	transports = [
-		new (winston.transports.Console)({ level: DEBUG_LEVEL }),
-		LOG_FILE ? new (winston.transports.File)({ level: DEBUG_LEVEL, filename: LOG_FILE }) : null
-	],
-	logger = new (winston.Logger)({
-    	transports: transports
-    });
+	transports = [new (winston.transports.Console)({ level: DEBUG_LEVEL })];
+if (LOG_FILE) {
+	transports.push(new (winston.transports.File)({ level: DEBUG_LEVEL, filename: LOG_FILE }));
+}
+var logger = new (winston.Logger)({
+	transports: transports
+});
 
 //
 // Configure socket.io.
@@ -39,11 +39,10 @@ io.configure(function(){
  * @returns {String} token ID
  */
 function createTokenId() {
-	var len = 2,
+	var len = 5,
 		key = createKey(),
 		offset = parseInt(Math.random() * (key.length - len));
-	
-	return 1;
+	//return 1;
 	return key.substring(offset, offset + len);
 }
 

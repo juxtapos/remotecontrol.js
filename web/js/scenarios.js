@@ -3,7 +3,7 @@ function ScenarioBase (rch) {
     this.rch = rch;
 }
 ScenarioBase.prototype.addEventListener = function (type, listener) {
-    this.rch.addEventListener.apply(this, arguments);
+    this.rch.addEventListener.call(this, type, listener);
     this.listeners.push( { type: type, listener: listener } );
 }
 
@@ -51,7 +51,7 @@ function ScenarioTouchSelect (rch) {
         }
 
         function move (event) {
-            //console.log('move')
+            console.log('move')
             var x, y, target;
             if (mouseStartDelta) {
                 cursorElmnt.css( { 
@@ -74,10 +74,10 @@ function ScenarioTouchSelect (rch) {
                 }
             }
         }
-        self.addEventListener('rcjs:touchmove', function ( ) {});
-        rch.addEventListener('rcjs:singletouchstart', down);
-        rch.addEventListener('rcjs:singletouchmove', move);
-        rch.addEventListener('rcjs:singletouchend', up);
+        this.addEventListener('rcjs:touchmove', function ( ) {});
+        this.addEventListener('rcjs:singletouchstart', down);
+        this.addEventListener('rcjs:singletouchmove', move);
+        this.addEventListener('rcjs:singletouchend', up);
     }
 }
 ScenarioTouchSelect.prototype = new ScenarioBase();
@@ -117,7 +117,6 @@ function ScenarioContextGestures (rch) {
             return false;
         }
         
-        $(container).sortable();
         $(container).find('.box').click(clickHandler);
 
         $(container).click(function (event) {
@@ -158,61 +157,89 @@ function ScenarioPhotos (rch) {
     ScenarioBase.apply(this, arguments);
     var selectedPhoto;
 
-    this.init = function (container) {
-        var stage = container;
-        var url = 'https://ajax.googleapis.com/ajax/services/search/images?v=1.0&q=graffiti nyc&rsz=8&callback=?';
-        $.getJSON(url, function (data) {
-            data.responseData.results.forEach(function (result, index) {
-                var photo = $('<div class="photo" id="photo' 
-                    + index + '"><img src="' + result.url+ '"></div>').appendTo(stage);
-                $(photo).find('img').on('load', function () {
+    this.init = function (container) { 
+        var query = 'graffiti dome',
+            url = getUrl(query),
+            self = this;
+
+        function getUrl(query) {
+            return ;
+        }
+
+        $(container).append('<div class="search"><label>Google Image Search</label><input id="SearchTerm"></div><div class="photos"></div>');
+        $(container).find('#SearchTerm').attr('value', query)
+            .keyup( function (event) {
+                if (event.keyCode === 13) {
+                    search($(this).attr('value'));
+                    console.log('search')
+                }
+            } );
+        search(query);
+
+        function search (query) {
+            var url = 'https://ajax.googleapis.com/ajax/services/search/images?v=1.0&q=' + query + '&rsz=8&callback=?';
+            container.find('.photos').empty();
+            $.getJSON(url, function (data) {
+                data.responseData.results.forEach(function (result, index) {
+                    var photo = $('<div class="photo" id="photo' 
+                        + index + '"><img src="' + result.url+ '"></div>').appendTo(container.find('.photos'));    
                     var rotation = (Math.random() * 90 - 45),
-                        scale = Math.random() / 2 + 0.5;
-                    photo.data({
-                        rotation: rotation,
-                        scale: scale
-                    })
-                    .css('-webkit-transform', 'rotate(' + rotation + 'deg) scale(' + scale + ')')
-                    .css('-moz-transform', ' rotate(' + rotation + 'deg)')
-                    .css({
-                        top: Math.max(Math.random() * stage.height() - photo.height(), 0) + "px",
-                        left: Math.max(Math.random() * stage.width() - photo.width(), 0) + "px"
-                    }).mousedown(function () {
+                        scale = 0.4 + Math.random() * 0.2,
+                        transform = 'rotate(' + rotation + 'deg)';
+                    // Using a scale() transform causes all kind of problems when used with draggable,
+                    // as the element's bounding box and thus its offset will be moved. This could 
+                    // be fixed by applying the matrix operation the origins and apply the value to 
+                    // the draggable's 'cursorAt' options property. 
+                    var img = photo.find('img');
+                    img.css('-webkit-transform', transform)
+                        .css('-moz-transform', transform)
+                        .attr('width', photo.find('img').width() * scale);
+                    photo.css({
+                            left: Math.random() * ($(container).width() - img.width() - 50),
+                            top: Math.random() * ($(container).height() - img.height() - 50)
+                        })
+                        .draggable()
+                        .mousedown(function () {
+                            $(selectedPhoto).removeClass('selected');
+                            $(this).addClass('selected');
+                            selectedPhoto = this;
+                        })
+                        .data({
+                            rotation: rotation,
+                            scale: scale
+                        });
+                });
+
+                container.click(function (event) {
+                    if (event.target == this) {
                         $(selectedPhoto).removeClass('selected');
-                        $(this).addClass('selected');
-                        selectedPhoto = this;
-                    }).click(function () {
-                        $(selectedPhoto).removeClass('selected');
-                        $(this).addClass('selected');
-                        selectedPhoto = this;
-                    }).mouseup(function () {
-                        $(selectedPhoto).removeClass('selected');
-                        selectedPhoto = null;
+                        selectedPhoto = null;  
+                    }
+                });
+
+                self.addEventListener('rcjs:pinchstart', function (event) {
+                    $(selectedPhoto).data({
+                        width: $(selectedPhoto).width()
                     });
                 });
-                photo.draggable();
-            });
-        });
 
-        this.addEventListener('rcjs:pinchend', function (event) {
-            $(selectedPhoto).data({
-                scale: $(selectedPhoto).data('currentScale'), 
-                currentScale: null, 
-                rotation: $(selectedPhoto).data('currentRotation'),
-                currentRotation: null
-            });
-        });
+                self.addEventListener('rcjs:pinchend', function (event) {
+                    $(selectedPhoto).data({
+                        rotation: $(selectedPhoto).data('currentRotation'),
+                    });
+                });
 
-        this.addEventListener('rcjs:pinch', function (event) {
-            var scale = $(selectedPhoto).data('scale') * event.scale,
-                deg = event.rotation + $(selectedPhoto).data('rotation');
-            $(selectedPhoto).data({
-                currentScale: scale,
-                currentRotation: deg
-            })
-            .css('-webkit-transform', 'rotate(' + deg + 'deg) scale(' + scale + ')')
-            .css('-moz-transform', 'rotate(' + deg + 'deg) scale(' + scale + ')');
-        });
+                self.addEventListener('rcjs:pinch', function (event) {
+                    var width = $(selectedPhoto).data('width') * event.scale,
+                        deg = $(selectedPhoto).data('rotation') + event.rotation,
+                        transform = 'rotate(' + deg + 'deg)';
+                    $(selectedPhoto).find('img')
+                        .css('-webkit-transform', transform)
+                        .css('-moz-transform', transform)
+                        .attr('width', width);
+                });
+            }); 
+        }
     }
 }
 ScenarioPhotos.prototype = new ScenarioBase();
@@ -261,20 +288,48 @@ function ScenarioLowLevel (rch) {
     var selected = 10;
 
     this.init = function (container) {
-        $(container).append('<table>\
-            <tr>\
-                <th>Gesture</th>\
-                <td id="Gesture"></td>\
-            </tr>\
-            <tr>\
-                <td>Event type</td>\
-                <td id="EventType"></td>\
-            </tr>\
-            <tr>\
-                <td>Values</th>\
-                <td id="Values"></td>\
-            </tr>\
-            </table>');
+        $(container).append('<h1>Low-level Event Test</h1>\
+            <div class="left">\
+                <table>\
+                    <tr>\
+                        <th>Current&nbsp;Gesture</th>\
+                        <th id="Gesture">(none)</th>\
+                    </tr>\
+                    <tr>\
+                        <td style="padding-top:20px">Last Event type</td>\
+                        <td style="padding-top:20px;width:200px" id="EventType"></td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2" id="Values" style="vertical-align:top;padding-top:30px"></td>\
+                    </tr>\
+                </table>\
+                <div style="margin-top:30px" id="EventList"></div>\
+            </div>\
+            <div class="right">\
+                <div id="DeviceOrientationEvent"></div>\
+                <div style="margin-top:30px" id="DeviceMotionEvent"></div>\
+            </div>');
+
+        this.addEventListener('rcjs:singletap', function (event) {
+            $('<div>Single-Tap</div>').appendTo($('#EventList'));
+        });
+
+        this.addEventListener('rcjs:doubletap', function (event) {
+            $('<div>Double-Tap</div>').appendTo($('#EventList'));
+        });
+
+        this.addEventListener('rcjs:singletouchstart', function (event) {
+            print('singletouch', 'rcjs:pinchstart', event);
+        });
+
+        this.addEventListener('rcjs:singletouchmove', function (event) {
+            print('singletouch', 'rcjs:singletouchmove', event);
+        });
+
+        this.addEventListener('rcjs:singletouchend', function (event) {
+            print(null, 'rcjs:singletouchend', event);
+            $('<div>Single-Touch</div>').appendTo($('#EventList'));
+        });
 
         this.addEventListener('rcjs:pinchstart', function (event) {
             print('pinch', 'rcjs:pinchstart', event);
@@ -285,7 +340,8 @@ function ScenarioLowLevel (rch) {
         });
 
         this.addEventListener('rcjs:pinchend', function (event) {
-            print('', 'rcjs:pinchend', event);
+            print(null, 'rcjs:pinchend', event);
+            $('<div>Pinch</div>').appendTo($('#EventList'));
         });
 
         this.addEventListener('rcjs:swipestart', function (event) {
@@ -297,53 +353,93 @@ function ScenarioLowLevel (rch) {
         });
 
         this.addEventListener('rcjs:swipeend', function (event) {
-            print('', 'rcjs:swipeend', event);
+            print(null, 'rcjs:swipeend', event);
+            var dir = rch.getDirection(event.angle),
+                name = 'Swipe ' + dir;
+            $('<div>' + name + '</div>').appendTo($('#EventList'));
         });
 
+        this.addEventListener('devicemotion', function (event) {
+            var table = '<table>\
+            <tr><th>Device Motion</th></tr>\
+            <tr><td class="sub">acceleration</td></tr>\
+            <tr><td>' + printTable(event.acceleration) + '</td></tr>\
+            <tr><td class="sub">accelerationIncludingGravity</td></tr>\
+            <tr><td>' + printTable(event.accelerationIncludingGravity) + '</td></tr>\
+            <tr><td class="sub">rotationRate</td></tr>\
+            <tr><td>' + printTable(event.rotationRate) + '</td></tr>\
+            </table';
+            $('#DeviceMotionEvent').empty().append(table);
+        });
+
+        this.addEventListener('deviceorientation', function (event) {
+            var table = '<table>\
+            <tr><th>Device Orientation</th></tr>\
+            <tr><td>' + printTable(event) + '</td></tr>\
+            </table';
+            $('#DeviceOrientationEvent').empty().append(table);
+            //$('.Scenario5 .orientationplane').show();
+            // var transform = 'rotateX(' + b + 'deg) rotateY(' + c + 'deg) rotate(' + a + 'deg)';
+            // console.log(a+","+b+","+c);
+            // $('.Scenario5 .orientationplane > div').css('-webkit-transform', transform);
+        });
+
+        function format(val, digits) {
+            if (val instanceof Array) {
+                if (val.length === 0) return '-'; else return val.toString();
+            } else {
+                digits = Math.pow(10, digits);
+                return Math.round(val * digits) / digits;
+            }
+        }
+
+        function printTable (obj, digits) {
+            digits = digits || 5;
+            var t = '<table class="smalldata">';
+            for (prop in obj) {
+                if (prop === 'type') { continue; }
+                //if (obj[prop] instanceof Array) { continue; }
+                t += '<tr><td>' + prop + '</td><td>' + format(obj[prop], digits) + '</td></tr>'
+            }
+            return t += '</table>';
+        }
+
         function print (gesture, type, obj) {
+            gesture = gesture || '(none)';
             $('#Gesture').empty().append(gesture);
             $('#EventType').empty().append(type);
-            $('#Values').empty().append(JSON.stringify(obj, null, '\t'));
+            $('#Values').empty().append(printTable(obj));
         }
+
+        // rch.emitEvent('rcjs:singletouchend', {
+        //     clientX: Math.random(),
+        //     clientY: Math.random(),
+        //     touches: [],
+        //     changedTouches: []
+        // })
+
+        // rch.emitEvent('devicemotion', {
+        //     acceleration: {
+        //         x: Math.random(),
+        //         y: Math.random(),
+        //         z: Math.random()
+        //     },
+        //     accelerationIncludingGravity: {
+        //         x: Math.random(),
+        //         y: Math.random(),
+        //         z: Math.random()
+        //     },
+        //     rotationRate: {
+        //         alpha: Math.random(),
+        //         beta: Math.random(),
+        //         gamma: Math.random()
+        //     }
+        // });
+        // rch.emitEvent('deviceorientation', {
+        //     alpha: Math.random(),
+        //     beta: Math.random(),
+        //     gamma: Math.random()
+        // });
     }
 }
 ScenarioLowLevel.prototype = new ScenarioBase();
-
-var demoScenarios = [
-    {
-        title: 'Touch Selection',
-        description: 'A single-finger touch move on the remote device is used to create a \
-            pointer function on the host application.',
-        id: 'Scenario1',
-        fct: ScenarioTouchSelect
-    },
-    {
-        title: 'Context Swipes',
-        description: 'Combined mouse click selection and swipes: select a box with your mouse \
-            then copy it with a "south-swipe, delete it with a "north-swipe", and double/reset the \
-            width with "east-/west-swipes". The color can be changed by using a 2-finger rotation gesture.',
-        id: 'Scenario2',
-        fct: ScenarioContextGestures
-    },
-    {
-        title: 'Photos',
-        description: 'Photos can be dragged with the mouse, selected with a click and then\
-            rotated and scaled with a rotate and pinch gestures on the remote device.\n\n\
-            The photos come from live a Google search. ',
-        id: 'Scenario3',
-        fct: ScenarioPhotos
-    },
-    {
-        title: 'Rotate Things',
-        description: 'Control with device orientation',
-        id: 'Scenario4',
-        fct: ScenarioRotate
-    },
-    {
-        title: 'Low-level',
-        description: 'Testing tap, touchmove, swipe, pinch & rotate gestures.\n\n\
-            Currently implemented are touchmove, swipe, pinch & rotate. Taps are coming.',
-        id: 'Scenario5',
-        fct: ScenarioLowLevel
-    }
-];

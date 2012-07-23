@@ -24,13 +24,14 @@ body {
 #remotecontrol {
     margin-top: 30px;
 }
-#sidebar > div:first-child {
-    padding-top: 40px;
+
+#sidebar > section {
+    font-size: 80%;
+    margin: 0px 20px 40px 20px;
 }
 
-#sidebar > div {
-    font-size: 80%;
-    margin: 0 20px 40px 20px;
+#sidebar > section:first-child {
+    padding-top: 40px;
 }
 
 #scenarioDescription {
@@ -39,6 +40,8 @@ body {
 
 #scenarioDescription h1 {
     text-decoration: underline;
+    font-size: 150%;
+    font-weight: normal;
 }
 
 #scenarioSelectBox {
@@ -48,7 +51,7 @@ body {
 #scenarioSelectBox select {
     display: block;
     width: 80%;
-    margin-top: 10px;
+    margin-top: 20px;
 }
 
 #scenarios {
@@ -63,7 +66,6 @@ body {
 
 #scenarios .stage {
     position: relative;
-    xoverflow: hidden;
     height: 100%;
 }
 

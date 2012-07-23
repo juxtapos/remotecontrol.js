@@ -63,6 +63,10 @@
     color: orange;
 }
 
+.remotecontrol button[disabled] {
+    opacity: 0.3;
+}
+
 .remotecontrol input {
     text-align: center;
     margin: 10px auto;
@@ -76,9 +80,10 @@
     font-size: 10px;
     text-align: center;
     margin: 10px;
+    height: 12px;
 }
 
-.remotecontrol .msg.pulse {
+.remotecontrol .msg .pulse {
     animation: pulsate 1.5s ease-in;
     animation-iteration-count: infinite; 
     font-weight: bold;

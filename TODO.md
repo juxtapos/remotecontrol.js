@@ -1,20 +1,24 @@
 # Todos
 
    * DONE: Figure out how to distinguish between pinch and swipe. 
-   * Implement single, double, triple taps.
+   * DONE: Implement single, double, triple taps.
    * DONE: Expose pinchstart, end and swipestart, end events. 
    * DONE: Implement rotation delta for Scenario3.
    * Implement Scenario4.
    * DONE: Implement color wheel selection in Scenario2. 
    * Remote threshold should come from host configuration. 
    * Make custom events configurable (like standard DOM events).
-   * Add connection handling (signal partners on disconnect).
-   * Signal on host when remote control is active.
-   * Finish Scenario5, add info and make first scenario. 
+   * DONE: Add connection handling (signal partners on disconnect).
+   * DONE: Signal on host when remote control is active.
+   * DONE: Finish Scenario5, add info and make first scenario. 
    * DONE: Make scenarios explicit. 
-   * Fix mouse selection in scenario 3. 
-   * Fix jquery draggable offset in scenario 3.
-   * Use proper HTML5 style structure. 
-   * Use <sections> in sidebar. 
+   * DONE: Fix mouse selection in scenario 3. 
+   * DONE: Fix jquery draggable offset in scenario 3.
+   * DONE: Use <sections> in sidebar. 
    * Document all events fired on host and remote.
-   * Add logging module for server. 
+   * DONE: Add logging module for server. 
+   * Fix bug where token is not freed after peer disconnects.
+   * Finalise transported properties from sender to receiver. 
+   * Check if gesture start/end events have all available properties. 
+   * Break relation between pointerMode and singletouch. 
+   * analyseTouch: put delays into constants, or, even better, rewrite the darn thing. 

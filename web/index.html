@@ -17,9 +17,47 @@
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.js"></script>
     <script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.8.21/jquery-ui.min.js"></script>
     <script>
+    var demoScenarios = [
+        {
+            title: 'Low-level',
+            description: 'Testing tap, touchmove, swipe, pinch & rotate gestures.\n\n\
+                Currently implemented are touchmove, swipe, pinch & rotate. Taps are coming.',
+            id: 'Scenario5',
+            fct: ScenarioLowLevel
+        },
+        {
+            title: 'Touch Selection',
+            description: 'A single-finger touch move on the remote device is used to create a \
+                pointer function on the host application.',
+            id: 'Scenario1',
+            fct: ScenarioTouchSelect
+        },
+        {
+            title: 'Context Swipes',
+            description: 'Combined mouse click selection and swipes: select a box with your mouse \
+                then copy it with a "south-swipe, delete it with a "north-swipe", and double/reset the \
+                width with "east-/west-swipes". The color can be changed by using a 2-finger rotation gesture.',
+            id: 'Scenario2',
+            fct: ScenarioContextGestures
+        },
+        {
+            title: 'Photos',
+            description: 'Photos can be dragged with the mouse, selected with a click and then\
+                rotated and scaled with a rotate and pinch gestures on the remote device.\n\n\
+                The photos come from live a Google search. ',
+            id: 'Scenario3',
+            fct: ScenarioPhotos
+        }
+        // ,{
+        //     title: 'Rotate Things',
+        //     description: 'Control with device orientation',
+        //     id: 'Scenario4',
+        //     fct: ScenarioRotate
+        // }
+    ];
     
     $(document).ready(function () {
-        init('Scenario1');
+        init('Scenario5');
     });
     
     function init (scenario) {
@@ -69,7 +107,12 @@
                 pointerMode : true
             });
 
+        function showMessage (msg) {
+            $('#remotecontrol .msg').empty().append(msg);
+        }
+
         $('#getTokenButton').on('click', function () { 
+            console.log('request token')
             rch.requestToken();
         });
 
@@ -81,13 +124,28 @@
             }, 60000);
         });
 
+        rch.addEventListener('rcjs:connect', function (data) {
+            showMessage('Connected to server');
+        });
+
+        rch.addEventListener('rcjs:remoteConnect', function (data) {
+            $('#remotecontrol button').attr('disabled', 'disabled');
+            showMessage('<div class="pulse">Remote connected</div>');
+        });
+
+        rch.addEventListener('rcjs:remoteDisconnect', function (data) {
+            $('#remotecontrol button').removeAttr('disabled');
+            $('#remotecontrol button span').empty();
+            showMessage('Remote disconnected');
+        });
+
         demoScenarios.forEach(function(desc) {
             slctd = desc.id == currentScenarioName ? 'selected' : '';
             $('#scenarioSelect').append('<option value="' + desc.id  + '" ' + slctd + '>' + desc.title + '</option>');
             scenarios[desc.id] = desc;
         });
 
-        document.querySelector('#scenarioSelect').addEventListener('change', function (event) {
+        $('#scenarioSelect').on('change', function (event) {
             selectScenario(event.target.value);
         });
 
@@ -97,29 +155,28 @@
     </script>
 </head>
 <body>
-	
     <div id="sidebar">
-        <div>
+        <section>
             <div class="description">What's This About?</div>
             <p>remotecontrol.js is an experiment to use gestures, touches and other events like orientation and motion 
                 from mobile devices in web applications on the desktop. After coupling a mobile device to an application, 
-                its range of additional events can be used to augment the opportunities for human-computer interaction.</p>
-        </div>
-        <div>
+                all of its events can be captured by a host application and used for enhancing its user interaction.</p>
+        </section>
+        <section>
             <div class="description">Get Token</div>
             <p>Click the button to get a fresh token to enter on your mobile device. I've already done that for you. The 
-                token times out after 1 minute.</p>
+                token disappears when timed out after one minute.</p>
             <div class="remotecontrol" id="remotecontrol">
                 <label>remotecontrol.js</label>
-                <p></p>
                 <button id="getTokenButton"><img src="images/reload.png" width="18"/><span>Token</span></button>
+                <p class="msg"></p>
             </div>
-        </div>
-        <div id="scenarioSelectBox">
+        </section>
+        <section id="scenarioSelectBox">
             <div class="description">Select Demo Scenario</div>
             <select id="scenarioSelect"></select>    
-        </div>
-        <div id="scenarioDescription"></div>
+        </section>
+        <section id="scenarioDescription"></section>
         <!--<div id="compatNote">
             <p><strong>Compatibility:</strong></p>
             <p>The demo application should run on a decent Chrome and Firefox browser.

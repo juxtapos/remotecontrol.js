@@ -20,7 +20,7 @@
             host: location.host, 
             port: 1337,
             showTouches: true,
-            deviceEventInterval: 100
+            deviceEventInterval: 200
         });
 
         document.getElementById('tokenSend').addEventListener('click', function () {
@@ -30,15 +30,14 @@
         remotecontrol.addEventListener('rcjs:error', function (event) {
             showMessage('Error: ' + event.msg);
         });
-        remotecontrol.addEventListener('rcjs:connected', function (event) {
+        remotecontrol.addEventListener('rcjs:connect', function (event) {
             showMessage('Connected');
         });
         remotecontrol.addEventListener('rcjs:startCapture', function (event) {
-            showMessage('Capturing');
-            $('#remotecontrol .msg').addClass('pulse');
+            showMessage('<div class="pulse">Capturing</div>');
         });
-        remotecontrol.addEventListener('rcjs:receiverDisconnect', function (event) {
-            showMessage('Disconnected');
+        remotecontrol.addEventListener('rcjs:remoteDisconnect', function (event) {
+            showMessage('Receiver Disconnected');
         });
         remotecontrol.addEventListener('rcjs:serverDisconnect', function (event) {
             showMessage('Server disconnected');

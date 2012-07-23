@@ -12,7 +12,7 @@ function RemoteControl (options) {
 	this.token = null;
 
 	socket.on('connect', function () {
-		self.emitEvent('rcjs:connected');
+		self.emitEvent('rcjs:connect');
 
 		socket.on('rcjs:startCapture', function (data) {
 			self.key = data.key;
@@ -20,9 +20,10 @@ function RemoteControl (options) {
 			self.emitEvent('rcjs:startCapture');
 		});
 
-		socket.on('rcjs:receiverDisconnect', function (data) {
+		socket.on('rcjs:remoteDisconnect', function (data) {
 			capture(false);
-			self.emitEvent('rcjs:receiverDisconnect');
+			self.emitEvent('rcjs:remoteDisconnect');
+			self.isCapturing = false;
 		});
 
 		socket.on('rcjs:supplyToken', function (data) {
@@ -75,6 +76,7 @@ function RemoteControl (options) {
 	var lastMotionEvent = 0, lastOrientationEvent = 0;
 
 	function genericEventHandler (event) {
+		if (!self.isCapturing) { return; }
 		var eventobj = copyEvent(event),
 			fireEvent = true,
 			ts = new Date().getTime();
@@ -108,6 +110,7 @@ function RemoteControl (options) {
 
 	function capture(doCapture, events) {
 		var method = doCapture ? window.addEventListener : window.removeEventListener;
+		self.isCapturing = doCapture;
 		self.captureEvents = events || self.captureEvents;
 		self.captureEvents.forEach(function (type) { 
 			method(type, genericEventHandler, false);
@@ -158,7 +161,8 @@ function RemoteControl (options) {
 				copy = {
 					alpha: event.alpha,
 					beta: event.beta,
-					gamma: event.gamma
+					gamma: event.gamma,
+					deviceOrientation: window.orientation
 				}
 				break;x
 			// http://www.w3.org/TR/orientation-event/#devicemotion
